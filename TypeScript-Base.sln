@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TS_Base", "TS_Base.csproj", "{4043E5DB-25B0-4830-BCF3-70818D8B2213}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypeScript-Base", "TypeScript-Base.csproj", "{4043E5DB-25B0-4830-BCF3-70818D8B2213}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
