@@ -172,14 +172,14 @@ Please read the API documentation to learn more about this stream implementation
 
 See: [TS.IO.Stream API documentation](http://lord-saumagen.byethost14.com/home/TypeScript-Base-Documentation/classes/ts.io.stream.html)
 
-##TS.Encoding
+##Namespace TS.Encoding
 
 The *'TS.Encoding'* namespace consists of two classes. The *'TS.Encoding.Base64'* class offers functions to encode and decode base64 string. The *'TS.Encoding.UTF'* class offers functions to cast a UTF-16 string into an UTF-8 string and vice versa.
 Please read the API documentation to learn more about those classes.
 
 See: [TS.Encoding API documentation](http://lord-saumagen.byethost14.com/home/TypeScript-Base-Documentation/modules/ts.encoding.html)
 
-##TS.TypeCode
+##Namespace TS.TypeCode
 
 You will find the *'UInt64'* class in this namespace. The class is an implementation of an unsigned 64 bit integer number. There are only as much arithmetic functions implemented as I needed in order to implement some cipher algorithms in another project. That class may be of little use in other scenarios.
 

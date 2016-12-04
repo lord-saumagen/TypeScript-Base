@@ -2326,15 +2326,15 @@ declare namespace TS {
             /**
             * @description A reference to the callback function which gets called when the stream finally closed.
             */
-            readonly onClosed: (() => void) | null;
+            readonly onClosed: ((stream: TS.IO.IStream<T>) => void) | null;
             /**
             * @description A reference to the callback function which gets called when the stream has data to read.
             */
-            readonly onData: (() => void) | null;
+            readonly onData: ((stream: TS.IO.IStream<T>) => void) | null;
             /**
             * @description A reference to the callback function which gets called when the stream ran into an error.
             */
-            readonly onError: (() => void) | null;
+            readonly onError: ((stream: TS.IO.IStream<T>) => void) | null;
             /**
             * @description A flag which tells whether the stream is closed.
             */
@@ -2348,13 +2348,21 @@ declare namespace TS {
             */
             readonly hasError: boolean;
             /**
-            * @description A flag which tells whether the stream is ready for write operations.
+            * @description A flag which tells whether the stream is ready for write operations. If 'canWrite' is true, that
+            *  doesn't necessarily mean that there is enough buffer space for your next write operation if you are in
+            *  synchronous mode.
+            *
+            * @see freeBufferSize
             */
             readonly canWrite: boolean;
             /**
             * @description A flag which tells whether the stream is ready for read operations.
             */
             readonly canRead: boolean;
+            /**
+            * @descriptions This property tells you how much buffer size is currently available.
+            */
+            readonly freeBufferSize: number;
             /**
             * @description A property which reveals the stream state.
             */
@@ -2371,16 +2379,15 @@ declare namespace TS {
         /**
         * @class TS.IO.Stream
         *
-        * @description This is a simple,e typed buffered stream implementation. The stream is a one time stream and
-        *  unidirectional. One time stream means, you can't use that stream any longer after the stream has closed or ran
-        *  into an error state. Unidirectional means you can transport elements form the sender to the receiver but not
-        *  vice versa. The stream has two operation modes. The receiver can either poll for new data on the stream or opt
-        *  for an event driven operation mode. If you opt for the event driven operation mode, you have to use the
-        *  appropriate constructor which requires three callback handlers to control the data transmission.
-        *  If you opt for polling use one of the other constructors.
-        *  The stream is not a byte stream. That means simple types are transfered by value but reference types will
-        *  only transfer a reference to an object. The object on the receiver side is the same as the on the sender side
-        *  and not a deserialized clone of that object. Keep that in mind to avoid unexpected behavior.
+        * @description This is a simple buffered stream implementation. The stream is a one time stream and unidirectional.
+        *  One time stream means, you can't use that stream any longer after the stream has closed or ran into an error
+        *  state. Unidirectional means you can transport elements form the sender to the receiver but not vice versa. The
+        *  stream has two operation modes. The receiver can either poll for new data on the stream or opt for an event
+        *  driven operation mode. If you opt for the event driven operation mode, you have to use the appropriate
+        *  constructor which requires three callback handlers to control the data transmission. If you opt for polling use
+        *  one of the other constructors. The stream is not a byte stream. That means simple types are transfered by value
+        *  but reference types will be transfered as reference. The object on the receiver side is the same as the one on
+        *  the sender side and not a deserialized clone of that object. Keep that in mind to avoid unexpected behavior.
         *
         * @implements {TS.IO.IStream<T>}
         */
@@ -2431,6 +2438,8 @@ declare namespace TS {
             /**
             * @description Returns true if the stream is close.
             *
+            * @implements {TS.IO.IStream}
+            *
             * @get {boolean}
             */
             readonly isClosed: boolean;
@@ -2439,27 +2448,29 @@ declare namespace TS {
             *
             * @implements {TS.IO.IStream}
             *
-            * @get {() => void | null}
+            * @get {((stream: TS.IO.IStream<T>) => void) | null}
             */
-            readonly onClosed: (() => void) | null;
+            readonly onClosed: ((stream: TS.IO.IStream<T>) => void) | null;
             /**
             * @description Returns the 'onData' callback function which was set during construction or null.
             *
             * @implements {TS.IO.IStream}
             *
-            * @get {() => void | null}
+            * @get {((stream: TS.IO.IStream<T>) => void) | null}
             */
-            readonly onData: (() => void) | null;
+            readonly onData: ((stream: TS.IO.IStream<T>) => void) | null;
             /**
             * @description Returns the 'onError' callback function which was set during construction or null.
             *
             * @implements {TS.IO.IStream}
             *
-            * @get {() => void | null}
+            * @get {((stream: TS.IO.IStream<T>) => void) | null}
             */
-            readonly onError: (() => void) | null;
+            readonly onError: ((stream: TS.IO.IStream<T>) => void) | null;
             /**
             * @description Returns true if the stream is ready for write operations.
+            *
+            * @implements {TS.IO.IStream}
             *
             * @get {boolean}
             */
@@ -2467,11 +2478,15 @@ declare namespace TS {
             /**
             * @description Returns size of the buffer which is currently available.
             *
+            * @implements {TS.IO.IStream}
+            *
             * @get {number}
             */
             readonly freeBufferSize: number;
             /**
             * @description Returns true if the stream is ready for read operations.
+            *
+            * @implements {TS.IO.IStream}
             *
             * @get {boolean}
             */
@@ -2502,16 +2517,16 @@ declare namespace TS {
             *  Binds the callback functions to the corresponding events for transmission control on the receiver side.
             *
             * @param {number} maxBufferSize, Must be a valid integer > 0.
-            * @param {() => void} onClosedCallback, Callback which gets called when the stream closed.
-            * @param {() => void} onDataCallback, Callback which gets called when new data arrived.
-            * @param {() => void} onErrorCallback, Callback which gets called when an error occurred.
+            * @param {(stream: TS.IO.IStream<T>) => void} onClosedCallback, Callback which gets called when the stream closed.
+            * @param {(stream: TS.IO.IStream<T>) => void} onDataCallback, Callback which gets called when new data arrived.
+            * @param {(stream: TS.IO.IStream<T>) => void} onErrorCallback, Callback which gets called when an error occurred.
             *
             * @throws {TS.InvalidTypeException}
             * @throws {TS.ArgumentOutOfRangeException}
             * @throws {TS.ArgumentNullOrUndefinedException}
             * @throws {InvalidInvocationException}
             */
-            constructor(maxBufferSize: number, onClosedCallback: () => void, onDataCallback: () => void, onErrorCallback: () => void);
+            constructor(maxBufferSize: number, onClosedCallback: (stream: TS.IO.IStream<T>) => void, onDataCallback: (stream: TS.IO.IStream<T>) => void, onErrorCallback: (stream: TS.IO.IStream<T>) => void);
             /**
             * @description Tries to call the 'onData' callback handler.
             */
@@ -2560,13 +2575,13 @@ declare namespace TS {
             * @private
             *
             * @param {() => void} handler, The handler which gets called when the timeout is reached.
-            * @param {number} timeout, The timespan in ms between to calls of the handler.
+            * @param {number} interval, The timespan in ms between to calls of the handler.
             *
             * @returns {number}, The interval timer handle.
             *
             * @throws {TS.EnvironmentNotSupportedException}
             */
-            private setInterval(handler, timeout);
+            private setInterval(handler, interval);
             /**
             * @description Clears the internal buffer, removes all callback functions except for 'onClosed' and sets the
             *  'internalState' to 'TS.IO.StreamStateEnum.CLOSED' if the stream isn't already in an error state.

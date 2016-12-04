@@ -9,16 +9,15 @@ namespace TS
     /**
     * @class TS.IO.Stream
     *
-    * @description This is a simple,e typed buffered stream implementation. The stream is a one time stream and
-    *  unidirectional. One time stream means, you can't use that stream any longer after the stream has closed or ran
-    *  into an error state. Unidirectional means you can transport elements form the sender to the receiver but not
-    *  vice versa. The stream has two operation modes. The receiver can either poll for new data on the stream or opt
-    *  for an event driven operation mode. If you opt for the event driven operation mode, you have to use the
-    *  appropriate constructor which requires three callback handlers to control the data transmission.
-    *  If you opt for polling use one of the other constructors.
-    *  The stream is not a byte stream. That means simple types are transfered by value but reference types will
-    *  only transfer a reference to an object. The object on the receiver side is the same as the on the sender side
-    *  and not a deserialized clone of that object. Keep that in mind to avoid unexpected behavior.
+    * @description This is a simple buffered stream implementation. The stream is a one time stream and unidirectional.
+    *  One time stream means, you can't use that stream any longer after the stream has closed or ran into an error
+    *  state. Unidirectional means you can transport elements form the sender to the receiver but not vice versa. The
+    *  stream has two operation modes. The receiver can either poll for new data on the stream or opt for an event
+    *  driven operation mode. If you opt for the event driven operation mode, you have to use the appropriate
+    *  constructor which requires three callback handlers to control the data transmission. If you opt for polling use
+    *  one of the other constructors. The stream is not a byte stream. That means simple types are transfered by value
+    *  but reference types will be transfered as reference. The object on the receiver side is the same as the one on
+    *  the sender side and not a deserialized clone of that object. Keep that in mind to avoid unexpected behavior.
     *
     * @implements {TS.IO.IStream<T>}
     */
@@ -31,9 +30,9 @@ namespace TS
       private internalBuffer: Array<T>;
       private internalMaxBufferSize: number;
       private internalError: TS.Exception | null = null;
-      private internalOnClosed: (() => void) | null = null;
-      private internalOnError: (() => void) | null = null;
-      private internalOnData: (() => void) | null = null;
+      private internalOnClosed: ((stream: TS.IO.IStream<T>) => void) | null = null;
+      private internalOnError: ((stream: TS.IO.IStream<T>) => void) | null = null;
+      private internalOnData: ((stream: TS.IO.IStream<T>) => void) | null = null;
       private internalOutstandingPromiseCounter: number = 0;
 
 
@@ -92,6 +91,8 @@ namespace TS
       /**
       * @description Returns true if the stream is close.
       *
+      * @implements {TS.IO.IStream}
+      *
       * @get {boolean}
       */
       public get isClosed(): boolean
@@ -105,9 +106,9 @@ namespace TS
       *
       * @implements {TS.IO.IStream}
       *
-      * @get {() => void | null}
+      * @get {((stream: TS.IO.IStream<T>) => void) | null}
       */
-      public get onClosed(): (() => void) | null
+      public get onClosed(): ((stream: TS.IO.IStream<T>) => void) | null
       {
         return this.internalOnClosed;
       }
@@ -118,9 +119,9 @@ namespace TS
       *
       * @implements {TS.IO.IStream}
       *
-      * @get {() => void | null}
+      * @get {((stream: TS.IO.IStream<T>) => void) | null}
       */
-      public get onData(): (() => void) | null
+      public get onData(): ((stream: TS.IO.IStream<T>) => void) | null
       {
         return this.internalOnData;
       }
@@ -131,9 +132,9 @@ namespace TS
       *
       * @implements {TS.IO.IStream}
       *
-      * @get {() => void | null}
+      * @get {((stream: TS.IO.IStream<T>) => void) | null}
       */
-      public get onError(): (() => void) | null
+      public get onError(): ((stream: TS.IO.IStream<T>) => void) | null
       {
         return this.internalOnError;
       }
@@ -141,6 +142,8 @@ namespace TS
 
       /**
       * @description Returns true if the stream is ready for write operations.
+      *
+      * @implements {TS.IO.IStream}
       *
       * @get {boolean}
       */
@@ -153,6 +156,8 @@ namespace TS
       /**
       * @description Returns size of the buffer which is currently available.
       *
+      * @implements {TS.IO.IStream}
+      *
       * @get {number}
       */
       public get freeBufferSize(): number
@@ -163,6 +168,8 @@ namespace TS
 
       /**
       * @description Returns true if the stream is ready for read operations.
+      *
+      * @implements {TS.IO.IStream}
       *
       * @get {boolean}
       */
@@ -198,17 +205,17 @@ namespace TS
       *  Binds the callback functions to the corresponding events for transmission control on the receiver side.
       *
       * @param {number} maxBufferSize, Must be a valid integer > 0.
-      * @param {() => void} onClosedCallback, Callback which gets called when the stream closed.
-      * @param {() => void} onDataCallback, Callback which gets called when new data arrived.
-      * @param {() => void} onErrorCallback, Callback which gets called when an error occurred.
+      * @param {(stream: TS.IO.IStream<T>) => void} onClosedCallback, Callback which gets called when the stream closed.
+      * @param {(stream: TS.IO.IStream<T>) => void} onDataCallback, Callback which gets called when new data arrived.
+      * @param {(stream: TS.IO.IStream<T>) => void} onErrorCallback, Callback which gets called when an error occurred.
       *
       * @throws {TS.InvalidTypeException}
       * @throws {TS.ArgumentOutOfRangeException}
       * @throws {TS.ArgumentNullOrUndefinedException}
       * @throws {InvalidInvocationException}
       */
-      constructor(maxBufferSize: number, onClosedCallback: () => void, onDataCallback: () => void, onErrorCallback: () => void)
-      constructor(maxBufferSize?: number, onClosedCallback?: () => void, onDataCallback?: () => void, onErrorCallback?: () => void)
+      constructor(maxBufferSize: number, onClosedCallback: (stream: TS.IO.IStream<T>) => void, onDataCallback: (stream: TS.IO.IStream<T>) => void, onErrorCallback: (stream: TS.IO.IStream<T>) => void)
+      constructor(maxBufferSize?: number, onClosedCallback?: (stream: TS.IO.IStream<T>) => void, onDataCallback?: (stream: TS.IO.IStream<T>) => void, onErrorCallback?: (stream: TS.IO.IStream<T>) => void)
       {
         this.internalBuffer = new Array<T>();
 
@@ -232,9 +239,9 @@ namespace TS
             TS.Utils.checkFunctionParameter("onClosedCallback", onClosedCallback, "TS.IO.Stream.constructor");
             TS.Utils.checkFunctionParameter("onDataCallback", onDataCallback, "TS.IO.Stream.constructor");
             TS.Utils.checkFunctionParameter("onErrorCallback", onErrorCallback, "TS.IO.Stream.constructor");
-            this.internalOnClosed = (onClosedCallback as () => void);
-            this.internalOnData = (onDataCallback as () => void);
-            this.internalOnError = (onErrorCallback as () => void);
+            this.internalOnClosed = (onClosedCallback as (stream: TS.IO.IStream<T>) => void);
+            this.internalOnData = (onDataCallback as (stream: TS.IO.IStream<T>) => void);
+            this.internalOnError = (onErrorCallback as (stream: TS.IO.IStream<T>) => void);
           }
 
           if ((arguments.length != 1) && (arguments.length != 4))
@@ -252,7 +259,7 @@ namespace TS
           {
             if (this.onData != null)
             {
-              this.onData();
+              this.onData(this);
             }
           }
           else
@@ -264,7 +271,7 @@ namespace TS
               this.internalClose();
               if (this.onClosed != null)
               {
-                this.onClosed();
+                this.onClosed(this);
                 this.internalOnClosed = null;
               }
             }
@@ -284,7 +291,7 @@ namespace TS
         {
           if (this.onData != null)
           {
-            this.onData();
+            this.onData(this);
           }
         }
       }
@@ -386,21 +393,21 @@ namespace TS
       * @private
       *
       * @param {() => void} handler, The handler which gets called when the timeout is reached.
-      * @param {number} timeout, The timespan in ms between to calls of the handler.
+      * @param {number} interval, The timespan in ms between to calls of the handler.
       *
       * @returns {number}, The interval timer handle.
       *
       * @throws {TS.EnvironmentNotSupportedException}
       */
-      private setInterval(handler: () => void, timeout: number): number
+      private setInterval(handler: () => void, interval: number): number
       {
         if ((typeof window === 'undefined') && !TS.Utils.Assert.isNullOrUndefined(global) && !TS.Utils.Assert.isNullOrUndefined(global.setInterval))
         {
-          return (global as any).setInterval(handler, timeout);
+          return (global as any).setInterval(handler, interval);
         }
         else if (!TS.Utils.Assert.isNullOrUndefined(window) && !TS.Utils.Assert.isNullOrUndefined(window.setInterval))
         {
-          return window.setInterval(handler, timeout);
+          return window.setInterval(handler, interval);
         }
         else
         {
@@ -493,7 +500,7 @@ namespace TS
             //
             if (this.onError != null)
             {
-              this.onError();
+              this.onError(this);
               this.internalClose();
             }
             //
@@ -611,7 +618,7 @@ namespace TS
                   //
                   let onErrorRef = this.onError;
                   this.internalClose();
-                  onErrorRef();
+                  onErrorRef(this);
                 }
                 this.internalClose();
               }//END if
@@ -671,7 +678,7 @@ namespace TS
                           //
                           let onErrorRef = this.onError;
                           this.internalClose();
-                          onErrorRef();
+                          onErrorRef(this);
                         }
                         this.internalClose();
                       }//END if
@@ -732,7 +739,7 @@ namespace TS
             this.internalClose();
             if (this.onClosed != null)
             {
-              this.onClosed();
+              this.onClosed(this);
               this.internalOnClosed = null;
             }//END if
           }//END if

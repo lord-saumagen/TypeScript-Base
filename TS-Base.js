@@ -4160,16 +4160,15 @@ var TS;
         /**
         * @class TS.IO.Stream
         *
-        * @description This is a simple,e typed buffered stream implementation. The stream is a one time stream and
-        *  unidirectional. One time stream means, you can't use that stream any longer after the stream has closed or ran
-        *  into an error state. Unidirectional means you can transport elements form the sender to the receiver but not
-        *  vice versa. The stream has two operation modes. The receiver can either poll for new data on the stream or opt
-        *  for an event driven operation mode. If you opt for the event driven operation mode, you have to use the
-        *  appropriate constructor which requires three callback handlers to control the data transmission.
-        *  If you opt for polling use one of the other constructors.
-        *  The stream is not a byte stream. That means simple types are transfered by value but reference types will
-        *  only transfer a reference to an object. The object on the receiver side is the same as the on the sender side
-        *  and not a deserialized clone of that object. Keep that in mind to avoid unexpected behavior.
+        * @description This is a simple buffered stream implementation. The stream is a one time stream and unidirectional.
+        *  One time stream means, you can't use that stream any longer after the stream has closed or ran into an error
+        *  state. Unidirectional means you can transport elements form the sender to the receiver but not vice versa. The
+        *  stream has two operation modes. The receiver can either poll for new data on the stream or opt for an event
+        *  driven operation mode. If you opt for the event driven operation mode, you have to use the appropriate
+        *  constructor which requires three callback handlers to control the data transmission. If you opt for polling use
+        *  one of the other constructors. The stream is not a byte stream. That means simple types are transfered by value
+        *  but reference types will be transfered as reference. The object on the receiver side is the same as the one on
+        *  the sender side and not a deserialized clone of that object. Keep that in mind to avoid unexpected behavior.
         *
         * @implements {TS.IO.IStream<T>}
         */
@@ -4208,7 +4207,7 @@ var TS;
                 this.internalDataAnnounceHandler = this.setInterval(() => {
                     if (this.hasData) {
                         if (this.onData != null) {
-                            this.onData();
+                            this.onData(this);
                         }
                     }
                     else {
@@ -4217,7 +4216,7 @@ var TS;
                             this.internalDataAnnounceHandler = null;
                             this.internalClose();
                             if (this.onClosed != null) {
-                                this.onClosed();
+                                this.onClosed(this);
                                 this.internalOnClosed = null;
                             }
                         }
@@ -4268,6 +4267,8 @@ var TS;
             /**
             * @description Returns true if the stream is close.
             *
+            * @implements {TS.IO.IStream}
+            *
             * @get {boolean}
             */
             get isClosed() {
@@ -4278,7 +4279,7 @@ var TS;
             *
             * @implements {TS.IO.IStream}
             *
-            * @get {() => void | null}
+            * @get {((stream: TS.IO.IStream<T>) => void) | null}
             */
             get onClosed() {
                 return this.internalOnClosed;
@@ -4288,7 +4289,7 @@ var TS;
             *
             * @implements {TS.IO.IStream}
             *
-            * @get {() => void | null}
+            * @get {((stream: TS.IO.IStream<T>) => void) | null}
             */
             get onData() {
                 return this.internalOnData;
@@ -4298,13 +4299,15 @@ var TS;
             *
             * @implements {TS.IO.IStream}
             *
-            * @get {() => void | null}
+            * @get {((stream: TS.IO.IStream<T>) => void) | null}
             */
             get onError() {
                 return this.internalOnError;
             }
             /**
             * @description Returns true if the stream is ready for write operations.
+            *
+            * @implements {TS.IO.IStream}
             *
             * @get {boolean}
             */
@@ -4314,6 +4317,8 @@ var TS;
             /**
             * @description Returns size of the buffer which is currently available.
             *
+            * @implements {TS.IO.IStream}
+            *
             * @get {number}
             */
             get freeBufferSize() {
@@ -4321,6 +4326,8 @@ var TS;
             }
             /**
             * @description Returns true if the stream is ready for read operations.
+            *
+            * @implements {TS.IO.IStream}
             *
             * @get {boolean}
             */
@@ -4333,7 +4340,7 @@ var TS;
             tryOnData() {
                 if (this.hasData) {
                     if (this.onData != null) {
-                        this.onData();
+                        this.onData(this);
                     }
                 }
             }
@@ -4411,18 +4418,18 @@ var TS;
             * @private
             *
             * @param {() => void} handler, The handler which gets called when the timeout is reached.
-            * @param {number} timeout, The timespan in ms between to calls of the handler.
+            * @param {number} interval, The timespan in ms between to calls of the handler.
             *
             * @returns {number}, The interval timer handle.
             *
             * @throws {TS.EnvironmentNotSupportedException}
             */
-            setInterval(handler, timeout) {
+            setInterval(handler, interval) {
                 if ((typeof window === 'undefined') && !TS.Utils.Assert.isNullOrUndefined(global) && !TS.Utils.Assert.isNullOrUndefined(global.setInterval)) {
-                    return global.setInterval(handler, timeout);
+                    return global.setInterval(handler, interval);
                 }
                 else if (!TS.Utils.Assert.isNullOrUndefined(window) && !TS.Utils.Assert.isNullOrUndefined(window.setInterval)) {
-                    return window.setInterval(handler, timeout);
+                    return window.setInterval(handler, interval);
                 }
                 else {
                     throw new TS.EnvironmentNotSupportedException("The current environment is not supported. The exception occurred in function 'TS.IO.Stream.setInterval'.");
@@ -4489,7 +4496,7 @@ var TS;
                         // If there is an error handler assigned to the stream, signal the exception on the error handler.
                         //
                         if (this.onError != null) {
-                            this.onError();
+                            this.onError(this);
                             this.internalClose();
                         }
                         else {
@@ -4577,7 +4584,7 @@ var TS;
                                     //
                                     let onErrorRef = this.onError;
                                     this.internalClose();
-                                    onErrorRef();
+                                    onErrorRef(this);
                                 }
                                 this.internalClose();
                             } //END if
@@ -4625,7 +4632,7 @@ var TS;
                                                     //
                                                     let onErrorRef = this.onError;
                                                     this.internalClose();
-                                                    onErrorRef();
+                                                    onErrorRef(this);
                                                 }
                                                 this.internalClose();
                                             } //END if
@@ -4672,7 +4679,7 @@ var TS;
                     if ((this.state == TS.IO.StreamStateEnum.REQUEST_FOR_CLOSE) && (this.internalOutstandingPromiseCounter == 0)) {
                         this.internalClose();
                         if (this.onClosed != null) {
-                            this.onClosed();
+                            this.onClosed(this);
                             this.internalOnClosed = null;
                         } //END if
                     } //END if

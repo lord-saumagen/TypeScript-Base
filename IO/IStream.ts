@@ -24,17 +24,17 @@ namespace TS
       /**
       * @description A reference to the callback function which gets called when the stream finally closed.
       */
-      readonly onClosed: (() => void) | null;
+      readonly onClosed: ((stream: TS.IO.IStream<T>) => void) | null;
 
       /**
       * @description A reference to the callback function which gets called when the stream has data to read.
       */
-      readonly onData: (() => void) | null;
+      readonly onData: ((stream: TS.IO.IStream<T>) => void) | null;
 
       /**
       * @description A reference to the callback function which gets called when the stream ran into an error.
       */
-      readonly onError: (() => void) | null;
+      readonly onError: ((stream: TS.IO.IStream<T>) => void) | null;
 
       /**
       * @description A flag which tells whether the stream is closed.
@@ -52,7 +52,11 @@ namespace TS
       readonly hasError: boolean;
 
       /**
-      * @description A flag which tells whether the stream is ready for write operations.
+      * @description A flag which tells whether the stream is ready for write operations. If 'canWrite' is true, that
+      *  doesn't necessarily mean that there is enough buffer space for your next write operation if you are in
+      *  synchronous mode.
+      *
+      * @see freeBufferSize
       */
       readonly canWrite: boolean;
 
@@ -60,6 +64,11 @@ namespace TS
       * @description A flag which tells whether the stream is ready for read operations.
       */
       readonly canRead: boolean;
+
+      /**
+      * @descriptions This property tells you how much buffer size is currently available.
+      */
+      readonly freeBufferSize: number
 
       /**
       * @description A property which reveals the stream state.
