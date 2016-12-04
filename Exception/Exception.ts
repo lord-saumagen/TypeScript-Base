@@ -3,12 +3,12 @@
   "use strict";
 
   /**
-  * @class Exception
+  * @class TS.Exception
   *
   * @description The base class of all exceptions defined in this framework. The Exception class has a public read only
   *  property called 'type' which returns the fully qualified type name of the exception class. This way you are able
   *  to create a finer granular error handling based on the exception type. Your are not longer forced to parse the
-  *  error message string to infer the nature of the excpetion. Each subclass of the Exception class has to override
+  *  error message string to infer the nature of the exception. Each subclass of the Exception class has to override
   *  the 'type' property to reflect the own type. The exception class has also a read only 'innerException' property
   *  which allows to create an exception stack which links back to the root exception.
   *
@@ -24,7 +24,7 @@
     /**
     * @private
     */
-    private internalInnerException: TS.Exception;
+    private internalInnerException: TS.Exception | null;
 
     /**
     * @description Returns the inner exception if available or null.
@@ -33,7 +33,7 @@
     *
     * @get {TS.Exception | null} innerException
     */
-    public get innerException(): TS.Exception
+    public get innerException(): TS.Exception | null
     {
       return this.internalInnerException;
     }
@@ -80,7 +80,7 @@
     * @param {string} message?, An optional message string.
     * @param {Exception} innerException?, An optional inner exception.
     */
-    constructor(message?: string, innerException?: TS.Exception)
+    constructor(message: string = "", innerException?: TS.Exception)
     {
       this.internalMessage = (message) ? message : "";
       this.internalInnerException = (innerException) ? innerException : null;
@@ -100,10 +100,11 @@
 
     /**
     * @description Returns a string which is the concatenation of the 'toString' call results of the current exception and the inner exceptions.
+    *  Call this function without any arguments on the top exception of the exception chain.
     *
     * @param {TS.Exception} exception
-    * @param {bookean} isInner, Defaults to false
-    * @param {string} offset, Default to 2 spaces. A string which is used to indent inner exception messages.
+    * @param {boolean} isInner, Defaults to false
+    * @param {string} offset, A string which is used to indent inner exception messages. Default to 2 spaces.
     *
     * @returns {string}
     */
@@ -132,7 +133,7 @@
 
 
   /**
-  * @class AmbiguousResultException
+  * @class TS.AmbiguousResultException
   *
   * @description This exception signals a an error where an operation which is specified to deliver a single result
   *  fails because there are multiple possible results available.
@@ -205,7 +206,7 @@
 
 
   /**
-  * @class ArgumentException
+  * @class TS.ArgumentException
   *
   * @description This exceptions signals a general error caused by an invalid argument.
   *
@@ -272,18 +273,14 @@
 
 
   /**
-  * @class ArgumentNullException
+  * @class TS.ArgumentNullException
   *
-  * @description This execptions signals an error caused by an unexpecte null value in an argument.
+  * @description This exception signals an error caused by an unexpected null value in an argument.
   *
-  * @extends {TS.Exception}
+  * @extends {TS.ArgumentException}
   */
-  export class ArgumentNullException extends TS.Exception
+  export class ArgumentNullException extends TS.ArgumentException
   {
-    /**
-    * @private
-    */
-    private internalArgumentName: string;
 
     /**
     * @override {TS.Exception}
@@ -296,45 +293,31 @@
     }
 
     /**
-    * @description The name of the argument which caused the exception.
-    *
-    * @get {string} argumentName
-    */
-    public get argumentName(): string
-    {
-      return this.internalArgumentName;
-    }
-
-    /**
     * @constructor
     *
     * @param {string} argumentName, The name of the argument which caused the exception.
     * @param {string} message?, An optional message string.
     * @param {Exception} innerException?, An optional inner exception.
     */
-    constructor(argumentName: string, message?: string, innerException?: Exception)
+    constructor(argumentName: string, message: string = "", innerException?: Exception)
     {
-      super(message, innerException);
-      this.internalArgumentName = (argumentName) ? argumentName : "";
+      super(message, null, message, innerException);
     }
 
   }//END class
 
 
   /**
-  * @class ArgumentNullOrUndefinedException
+  * @class TS.ArgumentNullOrUndefinedException
   *
-  * @description This exceptions signals an error caused by an unexpecte undefined or null value in an argument.
+  * @description This exceptions signals an error caused by an unexpected undefined or null value in an argument. The
+  *  argument value of that exception will always be null and doesn't reflect the exact argument value which caused
+  *  this exception.
   *
-  * @extends {TS.Exception}
+  * @extends {TS.ArgumentException}
   */
-  export class ArgumentNullOrUndefinedException extends TS.Exception
+  export class ArgumentNullOrUndefinedException extends TS.ArgumentException
   {
-    /**
-    * @private
-    */
-    private internalArgumentName: string;
-
     /**
     * @override {TS.Exception}
     *
@@ -346,45 +329,30 @@
     }
 
     /**
-    * @description The name of the argument which caused the exception.
-    *
-    * @get {string} argumentName
-    */
-    public get argumentName(): string
-    {
-      return this.internalArgumentName;
-    }
-
-    /**
     * @constructor
     *
     * @param {string} argumentName, The name of the argument which caused the exception.
     * @param {string} message?, An optional message string.
     * @param {Exception} innerException?, An optional inner exception.
     */
-    constructor(argumentName: string, message?: string, innerException?: Exception)
+    constructor(argumentName: string, message: string = "", innerException?: Exception)
     {
-      super(message, innerException);
-      this.internalArgumentName = (argumentName) ? argumentName : "";
+      super(message, null, message, innerException);
     }
   }//END class
 
 
   /**
-  * @class ArgumentNullUndefOrEmptyException
+  * @class TS.ArgumentNullUndefOrEmptyException
   *
-  * @description This excptions signals an error caused by an unexpecte undefined or null value in an argument or
-  *  an unexpected emptyness for an argument like an empty string or array.
+  * @description This exception signals an error caused by an unexpected undefined or null value in an argument or
+  *  an unexpected emptiness for an argument like an empty string or array. The argument value of that exception
+  *  will always be null and doesn't reflect the exact argument value which caused this exception.
   *
-  * @extends {TS.Exception}
+  * @extends {TS.ArgumentException}
   */
-  export class ArgumentNullUndefOrEmptyException extends TS.Exception
+  export class ArgumentNullUndefOrEmptyException extends TS.ArgumentException
   {
-    /**
-    * @private
-    */
-    private internalArgumentName: string;
-
     /**
     * @override {TS.Exception}
     *
@@ -396,16 +364,6 @@
     }
 
     /**
-    * @description The name of the argument which caused the exception.
-    *
-    * @get {string} argumentName
-    */
-    public get argumentName(): string
-    {
-      return this.internalArgumentName;
-    }
-
-    /**
     * @constructor
     *
     * @param {string} argumentName, The name of the argument which caused the exception.
@@ -414,26 +372,21 @@
     */
     constructor(argumentName: string, message?: string, innerException?: Exception)
     {
-      super(message, innerException);
-      this.internalArgumentName = (argumentName) ? argumentName : "";
+      super(argumentName, null, message, innerException);
     }
   }//END class
 
 
   /**
-  * @class ArgumentNullUndefOrWhiteSpaceException
+  * @class TS.ArgumentNullUndefOrWhiteSpaceException
   *
-  * @description This exceptions signals an unexpected emptynes of a string.
+  * @description This exceptions signals an unexpected emptiness of a string. The argument value of that exception
+  *  will always be null and doesn't reflect the exact argument value which caused this exception.
   *
-  * @extends {TS.Exception}
+  * @extends {TS.ArgumentException}
   */
-  export class ArgumentNullUndefOrWhiteSpaceException extends TS.Exception
+  export class ArgumentNullUndefOrWhiteSpaceException extends TS.ArgumentException
   {
-    /**
-    * @private
-    */
-    private internalArgumentName: string;
-
     /**
     * @override {TS.Exception}
     *
@@ -445,16 +398,6 @@
     }
 
     /**
-    * @description The name of the argument which caused the exception.
-    *
-    * @get {string} argumentName
-    */
-    public get argumentName(): string
-    {
-      return this.internalArgumentName;
-    }
-
-    /**
     * @constructor
     *
     * @param {string} argumentName, The name of the argument which caused the exception.
@@ -463,14 +406,13 @@
     */
     constructor(argumentName: string, message?: string, innerException?: Exception)
     {
-      super(message, innerException);
-      this.internalArgumentName = (argumentName) ? argumentName : "";
+      super(argumentName, null, message, innerException);
     }
   }//END class
 
 
   /**
-  * @class ArgumentOutOfRangeException
+  * @class TS.ArgumentOutOfRangeException
   *
   * @description This exceptions signals that an argument exceeded the range of allowed values.
   *
@@ -505,9 +447,9 @@
 
 
   /**
-  * @class ArgumentUndefinedException
+  * @class TS.ArgumentUndefinedException
   *
-  * @description This exceptions signals an error caused by an unexpecte undefined value in an argument.
+  * @description This exceptions signals an error caused by an unexpected undefined value in an argument.
   *
   * @extends {TS.ArgumentException}
   */
@@ -544,7 +486,7 @@
 
 
   /**
-  * @class IndexOutOfRangeException
+  * @class TS.IndexOutOfRangeException
   *
   * @description This exceptions signals that an index value exceeded the range of indexable elements.
   *
@@ -581,7 +523,7 @@
 
 
   /**
-  * @class InvalidInvocationException
+  * @class TS.InvalidInvocationException
   *
   * @description This exceptions signals that a function was invoked in an unexpected or invalid way.
   *
@@ -618,9 +560,9 @@
 
 
   /**
-  * @class InvalidOperationException
+  * @class TS.InvalidOperationException
   *
-  * @description This exceptions signals an attempt to start an operation which was not allowd to start in the current
+  * @description This exceptions signals an attempt to start an operation which was not allowed to start in the current
   *  situation.
   *
   * @extends {TS.Exception}
@@ -658,7 +600,7 @@
 
 
   /**
-  * @class InvalidCastException
+  * @class TS.InvalidCastException
   *
   * @description This exceptions signals that a casting operation failed.
 
@@ -695,7 +637,7 @@
 
 
   /**
-  * @class InvalidFormatException
+  * @class TS.InvalidFormatException
   *
   * @description This exceptions signals that an operation failed because of an invalid format of some data.
   *
@@ -764,7 +706,7 @@
 
 
   /**
-  * @class InvalidTypeException
+  * @class TS.InvalidTypeException
   *
   * @description This exceptions signals that an argument has an invalid type.
   *
@@ -833,12 +775,12 @@
 
 
   /**
-  * @class ArithmeticException
+  * @class TS.ArithmeticException
   *
   * @description This exception signals an errors in an arithmetic, casting, or conversion operation.
   *  ArithmeticException is the base class for DivideByZeroException, NotFiniteNumberException, and OverflowException.
   *  Use one of the derived classes of ArithmeticException if appropriate to the exact nature of the error.
-  *  Throw an ArithmeticException if there is no appropriate subclass to descripte the nature of the error.
+  *  Throw an ArithmeticException if there is no appropriate subclass to describe the nature of the error.
   *
   * @extends {TS.Exception}
   */
@@ -871,7 +813,7 @@
 
 
   /**
-  * @class OverflowException
+  * @class TS.OverflowException
   *
   * @description This exception signals that an arithmetic, casting, or conversion operation results in an overflow.
   *
@@ -905,7 +847,7 @@
 
 
   /**
-  * @class DividedByZeroException
+  * @class TS.DividedByZeroException
   *
   * @description This exception signals an attempt to divide a number value by zero.
   *
@@ -939,7 +881,7 @@
 
 
   /**
-  * @class NotFiniteNumberException
+  * @class TS.NotFiniteNumberException
   *
   * @description This exception signals an attempt to execute an arithmetic operation with a number value which is
   *  either infinite or Not-a-Number (NaN).
@@ -979,7 +921,7 @@
 
 
   /**
-  * @class NotImplementedException
+  * @class TS.NotImplementedException
   *
   * @description This exception signals that a function or class is not or not fully implemented and can't be used.
   *
@@ -1011,7 +953,7 @@
 
 
   /**
-  * @class DeprecatedException
+  * @class TS.DeprecatedException
   *
   * @description This exception signals that a function or class should not longer be used.
   *
@@ -1048,9 +990,9 @@
 
 
   /**
-  * @class DirectoryNotFoundException
+  * @class TS.DirectoryNotFoundException
   *
-  * @description This exception signals if the filesystem is not able to locate the requested directory.
+  * @description This exception signals if the file system is not able to locate the requested directory.
   *
   * @extends {TS.Exception}
   */
@@ -1113,12 +1055,51 @@
 
 
   //********************************************************************************
+  // IO exceptions
+  //********************************************************************************
+
+  /**
+  * @class TS.BufferOverrunException
+  *
+  * @description This exception signals if the file system is not able to locate the requested directory.
+  *
+  * @extends {TS.Exception}
+  */
+  export class BufferOverrunException extends TS.Exception
+  {
+
+
+    /**
+    * @override {TS.Exception}
+    *
+    * @get {string} type
+    */
+    public get type(): string
+    {
+      return "TS.BufferOverrunException";
+    }
+
+
+    /**
+    * @constructor
+    *
+    * @param {string} message?, An optional message string.
+    * @param {Exception} innerException?, An optional inner exception.
+    */
+    constructor(message?: string, innerException?: Exception)
+    {
+      super(message, innerException);
+    }
+  }
+
+
+  //********************************************************************************
   // Environment exceptions
   //********************************************************************************
 
 
   /**
-  * @class EnvironmentNotSupportedException
+  * @class TS.EnvironmentNotSupportedException
   *
   * @description This exception that some operation failed because the current environment is not supported. That may
   *  be the reason if a JavaScript VM lacks some functions, a Node.js script is running in a browser or vice versa or
@@ -1159,7 +1140,7 @@
 
 
   /**
-  * @class TimeoutException
+  * @class TS.TimeoutException
   *
   * @description This exception if thrown if a function or operation doesn't response in a timely manner.
   *

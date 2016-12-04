@@ -3,8 +3,8 @@
   export namespace Utils
   {
     /**
-    * @description A collection of assertion functions. Those are functions which take on argument and return a boolean value.
-    *  The boolean value describes whether the argument satisfies a specific condition or not.
+    * @description A collection of assertion functions. Those are functions which take on argument and return a
+    *  boolean value. The boolean value describes whether the argument satisfies a specific condition or not.
     */
     export namespace Assert
     {
@@ -192,7 +192,7 @@
 
 
       /**
-      * @description Returns true if the type of the argument 'source' is in the  ranche of signed byte values
+      * @description Returns true if the type of the argument 'source' is in the  range of signed byte values
       *  [-127 .. 127], otherwise false.
       *
       * @param {any} source
@@ -297,7 +297,7 @@
 
         //
         // Check whether the base class is 'Object' or not. If the base class isn't object, check the own properties on 
-        // the prototype. It may be that only the prototype got subclassed.
+        // the prototype. It may be that only the prototype got sub classed.
         //
         if (Object.getPrototypeOf(Object.getPrototypeOf(object)) != null)
         {
@@ -313,7 +313,7 @@
 
 
         //
-        // If the 'ownPropertyArray' is still empt consider the object an empty object.
+        // If the 'ownPropertyArray' is still empty consider the object an empty object.
         //
         if (ownPropertyArray.length == 0)
         {
@@ -340,6 +340,34 @@
         }//END if
 
         return Object.prototype.toString.call(source).indexOf("Date") > 0;
+      }
+
+
+      /**
+      * @description Returns true if the type of the argument 'source' is a valid date string otherwise false.
+      *
+      * @param {any} source
+      *
+      * @returns {boolean}
+      */
+      export function isDateString(source: any): boolean
+      {
+        if (TS.Utils.Assert.isNullUndefOrWhiteSpace(source))
+        {
+          return false;
+        }
+
+        if (!TS.Utils.Assert.isString(source))
+        {
+          return false;
+        }
+
+        if (TS.Utils.Assert.isNaN(Date.parse(source)))
+        {
+          return false;
+        }
+
+        return true;
       }
 
 
@@ -377,7 +405,14 @@
           return false;
         }//END if
 
-        return !(<Array<any>>source).some((value, index, array) => value === undefined);
+        for (let index = 0; index < (source as Array<any>).length; index++)
+        {
+          if ((source as Array<any>)[index] == undefined)
+          {
+            return false;
+          }
+        }
+        return true;
       }
 
 
@@ -535,7 +570,7 @@
       /**
       * @description Returns true if the type of the argument 'source' is an instance of the type given in argument
       *  'type', otherwise false. That function doesn't do much more than calling the JavaScript 'instanceof'
-      *  operator. That function is only created for your convenience. This way all assertion funcionts are in one
+      *  operator. The function is only created for your convenience. This way all assertion functions are in one
       *  place.
       *
       * @param {any} source
@@ -564,7 +599,7 @@
       *  [Number.MIN_SAFE_INTEGER..Number.MAX_SAFE_INTEGER], otherwise false.
       *
       * @see TS.Utils.Assert.isNumber
-      * @see TS.Utils.Assert.isPositiveIntegerNumber
+      * @see TS.Utils.Assert.isUnsignedIntegerNumber
       *
       * @param {any} source
       *
@@ -706,7 +741,7 @@
 
 
       /**
-      * @description Returns true if the argument value is either null or undefined or is a string wich is either empty
+      * @description Returns true if the argument value is either null or undefined or is a string which is either empty
       *  or contains only white space characters.
       *
       * @param {string} source
@@ -740,7 +775,7 @@
       * @see TS.Utils.Assert.isIntegerNumber
       * @see TS.Utils.Assert.isNumberObject
       * @see TS.Utils.Assert.isNumberValue
-      * @see TS.Utils.Assert.isPositiveIntegerNumber
+      * @see TS.Utils.Assert.isUnsignedIntegerNumber
       *
       * @param {any} source
       *
@@ -825,7 +860,9 @@
 
 
       /**
-      * @description Returns true if the type of argument 'source' is a plain object otherwise false.
+      * @description Returns true if the type of argument 'source' is a plain object otherwise false. A plain object is
+      *  an object without a prototype. It is either a literal object or an object created with 'Object.create'
+      *  function called with a null argument.
       *
       * @example
       *
@@ -1101,7 +1138,7 @@
 
 
       /**
-      * @description Returns true if the type of the argument 'source' is an array of unsinged byte values, otherwise
+      * @description Returns true if the type of the argument 'source' is an array of unsigned byte values, otherwise
       *  false. Unsigned byte values are values in the range of [0..255]
       *
       * @see TS.Utils.Assert.isUnsignedByteValue
@@ -1137,7 +1174,7 @@
 
 
       /**
-      * @description Returns true if the type of the argument 'source' is in the ranche of unsigned byte values
+      * @description Returns true if the type of the argument 'source' is in the range of unsigned byte values
       *  [0 .. 255], otherwise false.
       *
       * @param {any} source
@@ -1203,18 +1240,22 @@
       /**
       * @description Returns true if the value of the argument 'source' is a valid element of the enumeration in
       *  argument 'enumObj'. This function does not implicitly convert number strings to numbers. That differs from the
-      *  normal enum bahavior and is by design. See example.
+      *  normal enum behavior and is by design. See example.
       *
       * @example
       *
       *  enum testEnum = { ZERO, ONE, TWO };
       *
       *  testEnum[2];     // "TWO"  -> 2 accepted as valid enum member
+      *
       *  testEnum["ONE"]; // 1      -> "ONE" accepted as valid enum member
+      *
       *  testEnum["2"];   // "TWO"  -> "2" accepted as valid enum member
       *
       *  isValueOfEnum[2];     // true   -> 2 accepted as valid enum member
+      *
       *  isValueOfEnum["ONE"]; // true   -> "ONE" accepted as valid enum member
+      *
       *  isValueOfEnum["2"];   // false  -> "2" NOT accepted as valid enum member
       *
       * @param {number | string} source

@@ -20,7 +20,7 @@ namespace TS
       *
       * @static
       *
-      * @param {string} input, The string wich gets encoded to UTF8.
+      * @param {string} input, The string which gets encoded to UTF8.
       *
       * @returns {Array<number>}, The resulting byte array.
       *
@@ -233,7 +233,6 @@ namespace TS
         {
           resultArray.unshift(0);
         }//END if
-        return resultArray;
       }//END if
 
       if (x <= 65535)
@@ -242,7 +241,6 @@ namespace TS
         {
           resultArray.unshift(0);
         }//END if
-        return resultArray;
       }//END if
 
       if (x <= 2097151)
@@ -251,8 +249,9 @@ namespace TS
         {
           resultArray.unshift(0);
         }//END if
-        return resultArray;
       }//END if
+
+      return resultArray;
 
     }
 

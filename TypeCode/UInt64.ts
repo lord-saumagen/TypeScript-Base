@@ -8,7 +8,7 @@ namespace TS
     * @class TS.TypeCode.UInt64
     *
     * @descripion This class implements a 64 bit unsigned integer number type and some basic operations on this type.
-    *  The UInt64 is used in some cypher algorithms. 
+    *  The UInt64 is used in some cipher algorithms. 
     */
     export class UInt64
     {
@@ -53,7 +53,7 @@ namespace TS
         TS.Utils.checkUIntNumberParameter("value", value, "TS.TypeCode.UInt64.set mostSignificantInteger");
         if (value > 0xFFFFFFFF)
         {
-          throw new TS.ArgumentOutOfRangeException("mostSignificantInteger", value, "The argument excceeded the valid number range. Valid numbers must fall into the range of [0 ..." + 0xFFFFFFFF.toString() + "]");
+          throw new TS.ArgumentOutOfRangeException("mostSignificantInteger", value, "The argument exceeded the valid number range. Valid numbers must fall into the range of [0 ..." + 0xFFFFFFFF.toString() + "]");
         }//END if
 
         this.internalMostSignificantInteger = value;
@@ -85,7 +85,7 @@ namespace TS
         TS.Utils.checkUIntNumberParameter("value", value, "TS.TypeCode.UInt64.set leastSignificantInteger");
         if (value > 0xFFFFFFFF)
         {
-          throw new TS.ArgumentOutOfRangeException("leastSignificantInteger", value, "The argument excceeded the valid number range. Valid numbers must fall into the range of [0 ..." + 0xFFFFFFFF.toString() + "]");
+          throw new TS.ArgumentOutOfRangeException("leastSignificantInteger", value, "The argument exceeded the valid number range. Valid numbers must fall into the range of [0 ..." + 0xFFFFFFFF.toString() + "]");
         }//END if
 
         this.internalLeastSignificantInteger = value;
@@ -167,7 +167,7 @@ namespace TS
 
         if (tempMSInteger > 0xFFFFFFFF)
         {
-          throw new TS.OverflowException("An arithmetic operation resulted in an overflow. The error occured in 'TS.TypeCode.UInt64.add'.")
+          throw new TS.OverflowException("An arithmetic operation resulted in an overflow. The error occurred in 'TS.TypeCode.UInt64.add'.")
         }//END if
 
         return new TS.TypeCode.UInt64(tempMSInteger, tempLSInteger);
@@ -328,6 +328,11 @@ namespace TS
         {
           return false;
         }//END if
+
+        //
+        // Must be equal.
+        //
+        return false;
       }
 
 
@@ -414,7 +419,7 @@ namespace TS
         let result = UInt64Number.mostSignificantInteger * 0x100000000 + UInt64Number.leastSignificantInteger;
         if (result > Number.MAX_SAFE_INTEGER)
         {
-          throw new TS.OverflowException("The current number exceeds the range of 'Number.MAX_SAVE_INTEGER'. The exception occured in function 'TS.TypeCode.UInt64.UInt64ToUInt'.");
+          throw new TS.OverflowException("The current number exceeds the range of 'Number.MAX_SAVE_INTEGER'. The exception occurred in function 'TS.TypeCode.UInt64.UInt64ToUInt'.");
         }
         return result;
       }

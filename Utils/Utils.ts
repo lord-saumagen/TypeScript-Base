@@ -4,8 +4,8 @@ namespace TS
 
   /**
    * @description The module 'Utils' hosts a collection of functions which offer solutions for common problems or
-   *  reoccuring tasks which are not class specific. Since they are not class specific, they are also not part of a
-   *  class. They are simply collected in this file and are part of the namespac. You can consider all of this
+   *  reoccurring tasks which are not class specific. Since they are not class specific, they are also not part of a
+   *  class. They are simply collected in this file and are part of the namespace. You can consider all of this
    *  functions as static if you like, because you can call them without a prior instantiation of an object.
    */
   export namespace Utils
@@ -194,7 +194,7 @@ namespace TS
 
     /**
     * @description Searches for all occurrences of 'searchString' in 'sourceString' and returns an array of the
-    *  indexes where the searchstring occurred in the sourceString.
+    *  indexes where the search string occurred in the sourceString.
     *
     * @param {string} sourceString
     * @param {string} searchString
@@ -242,7 +242,6 @@ namespace TS
     * @returns {Array<number>}, The resulting byte value array which may be empty.
     *
     * @throws {TS.ArgumentNullOrUndefinedException}
-    * @throws {TS.ArgumentNullUndefOrEmptyException}
     * @throws {TS.ArgumentNullUndefOrWhiteSpaceException}
     * @throws {TS.InvalidTypeException}
     */
@@ -254,7 +253,6 @@ namespace TS
 
       resultArray = new Array<number>();
 
-      TS.Utils.checkNotEmptyParameter("bitString", bitString, "TS.Utils.bitStringToByteArray");
       TS.Utils.checkBitStringParameter("bitString", bitString, "TS.Utils.bitStringToByteArray");
 
 
@@ -280,38 +278,37 @@ namespace TS
     /**
     * @description Converts the values of the elements in argument 'byteArray' into a bit string representation.
     *
-    * @param {Array<number>} byteArray, The array of byte values to convert.
+    * @param {Array<number>} unsignedByteArray, The array of byte values to convert.
     *
     * @returns {string}, The resulting bit string.
     *
-    * @throws {TS.ArgumentNullUndefOrEmptyException}
+    * @throws {TS.ArgumentNullOrUndefinedException}
     * @throws {TS.InvalidTypeException }
     */
-    export function byteArrayToBitString(byteArray: Array<number>): string
+    export function byteArrayToBitString(unsignedByteArray: Array<number>): string
     {
       let resultString: string;
 
-      TS.Utils.checkNotEmptyParameter("byteArray", byteArray, "TS.Utils.byteArrayToUInt");
-      TS.Utils.checkUByteArrayParameter("byteArray", byteArray, "TS.Utils.byteArrayToUInt");
+      TS.Utils.checkUByteArrayParameter("byteArray", unsignedByteArray, "TS.Utils.byteArrayToUInt");
 
       resultString = "";
 
-      byteArray.forEach((value, index, array) => resultString += byteToBitString(value));
+      unsignedByteArray.forEach((value, index, array) => resultString += byteToBitString(value));
 
       return resultString;
     }
 
 
     /**
-    * @description Converts an array of unsigned byte values into an unsinged integer value. The function throws an
+    * @description Converts an array of unsigned byte values into an unsigned integer value. The function throws an
     *  exception if the value in argument 'unsignedByteArray' is not a valid byte array or empty. The function throws
     *  a 'TS.ArgumentOutOfRangeException' if the conversion exceeds the maximum number range. (Number.MAX_SAFE_INTEGER)
     *
     * @params {Array<number>} byteArray, An array of unsigned byte values.
     *
-    * @returns {number}, The result value as unsingned integer.
+    * @returns {number}, The result value as unsigned integer.
     *
-    * @throws {TS.ArgumentNullUndefOrEmptyException}
+    * @throws {TS.ArgumentNullOrUndefinedException}
     * @throws {TS.InvalidTypeException }
     * @throws {TS.ArgumentOutOfRangeException}
     */
@@ -320,7 +317,6 @@ namespace TS
       let resultNumber: number;
       let factor: number;
 
-      TS.Utils.checkNotEmptyParameter("byteArray", unsignedByteArray, "TS.Utils.byteArrayToUInt");
       TS.Utils.checkUByteArrayParameter("byteArray", unsignedByteArray, "TS.Utils.byteArrayToUInt");
 
       resultNumber = 0;
@@ -333,7 +329,7 @@ namespace TS
 
         if (resultNumber > Number.MAX_SAFE_INTEGER)
         {
-          throw new TS.ArgumentOutOfRangeException("unsignedByteArray", unsignedByteArray, "Argument 'unsignedByteArray' exceedes the maximum number range during conversion to an unsigned number in function TS.Utils.byteArrayToUInt");
+          throw new TS.ArgumentOutOfRangeException("unsignedByteArray", unsignedByteArray, "Argument 'unsignedByteArray' exceeds the maximum number range during conversion to an unsigned number in function TS.Utils.byteArrayToUInt");
         }//END if
       }
 
@@ -342,25 +338,24 @@ namespace TS
 
 
     /**
-    * @description Converts the value given in argument 'value' into an 8 character bit string. The result string will be
-    *  padded with leading '0' characters if necessary until the length of 8 characters is reached.
+    * @description Converts the value given in argument 'unsignedByteValue' into an 8 character bit string. The result
+    *  string will be padded with leading '0' characters if necessary until the length of 8 characters is reached.
     *
-    * @param {number} value, Has to be a byte value.
+    * @param {number} unsignedByteValue, Has to be an unsigned byte value.
     *
     * @returns {string}, The 8 character bit string representation of the value.
     *
     * @throws {TS.ArgumentNullOrUndefinedException}
     * @throws {TS.InvalidTypeException}
     */
-    export function byteToBitString(value: number): string
+    export function byteToBitString(unsignedByteValue: number): string
     {
       let resultString: string;
 
-      TS.Utils.checkParameter("value", value, "TS.Utils.byteToBitString");
-      TS.Utils.checkUByteParameter("value", value, "TS.Utils.byteToBitString");
+      TS.Utils.checkUByteParameter("value", unsignedByteValue, "TS.Utils.byteToBitString");
 
       resultString = "";
-      resultString += value.toString(2);
+      resultString += unsignedByteValue.toString(2);
       resultString = padLeft(resultString, "0", 8);
       return resultString;
     }
@@ -612,7 +607,7 @@ namespace TS
 
       //
       // Check whether the base class is 'Object' or not. If the  base class isn't object, check the own properties on 
-      // the prototype. It may be that only the prototype got subclassed.
+      // the prototype. It may be that only the prototype got sub classed.
       //
       if (Object.getPrototypeOf(Object.getPrototypeOf(object)) != null)
       {
@@ -634,6 +629,55 @@ namespace TS
         throw new TS.InvalidTypeException(parameterName, "Argument '" + parameterName + "' must be a valid constructor function in function '" + functionName + "'.");
       }//END if
 
+    }
+
+
+    /**
+    * @description Checks the value of argument 'parameter' against null and undefined and throws a
+    *  'TS.ArgumentNullOrUndefinedException' if the argument is either null or undefined.
+    *  Checks whether the value of argument 'parameter' is a Date. Throws as 'TS.InvalidTypeException' if not.
+    *  The exception messages use the 'parameterName' and 'functionName' in its message to signal which parameter
+    *  failed the check and which function received the invalid parameter.
+    *
+    * @param {string} parameterName
+    * @param {any} parameter
+    * @param {string} functionName
+    *
+    * @throws {TS.ArgumentNullOrUndefinedException}
+    * @throws {TS.InvalidTypeException}
+    */
+    export function checkDateParameter(parameterName: string, parameter: any, functionName: string)
+    {
+      TS.Utils.checkParameter(parameterName, parameter, functionName);
+      if (!TS.Utils.Assert.isDate(parameter))
+      {
+        throw new TS.InvalidTypeException(parameterName, parameter, "Argument '" + parameterName + "' must be a valid Date in function '" + functionName + "'.");
+      }
+    }
+
+
+    /**
+    * @description Checks the value of argument 'parameter' against null and undefined and throws a
+    *  'TS.ArgumentNullOrUndefinedException' if the argument is either null or undefined.
+    *  Checks whether the value of argument 'parameter' is a valid date string. Throws as 'TS.InvalidTypeException' if
+    *  not.
+    *  The exception messages use the 'parameterName' and 'functionName' in its message to signal which parameter
+    *  failed the check and which function received the invalid parameter.
+    *
+    * @param {string} parameterName
+    * @param {any} parameter
+    * @param {string} functionName
+    *
+    * @throws {TS.ArgumentNullOrUndefinedException}
+    * @throws {TS.InvalidTypeException}
+    */
+    export function checkDateStringParameter(parameterName: string, parameter: any, functionName: string)
+    {
+      TS.Utils.checkParameter(parameterName, parameter, functionName);
+      if (!TS.Utils.Assert.isDateString(parameter))
+      {
+        throw new TS.InvalidTypeException(parameterName, parameter, "Argument '" + parameterName + "' must be a valid Date string in function '" + functionName + "'.");
+      }
     }
 
 
@@ -889,7 +933,7 @@ namespace TS
     {
       if (TS.Utils.Assert.isNullOrUndefined(parameter))
       {
-        throw new TS.ArgumentNullOrUndefinedException(parameterName, "Argument '" + parameterName + "' must not be null or undefinde in function '" + functionName + "'.");
+        throw new TS.ArgumentNullOrUndefinedException(parameterName, "Argument '" + parameterName + "' must not be null or undefined in function '" + functionName + "'.");
       }//END if
     }
 
@@ -898,7 +942,7 @@ namespace TS
     * @description Checks the value of argument 'parameter' against null and undefined and throws a
     *  'TS.ArgumentNullOrUndefinedException' if the argument is either null or undefined.
     *  Checks whether the argument 'parameter' is a valid string. Throws a 'TS.InvalidTypeException' if not.
-    *  Checks whether the argument'parameter' is an empty string or whitespace only.Throws a
+    *  Checks whether the argument 'parameter' is an empty string or whitespace only.Throws a
     *  'TS.ArgumentNullUndefOrWhiteSpaceException' if so.
     *  The exception messages use the 'parameterName' and 'functionName' in its message to signal which parameter
     *  failed the check and which function received the invalid parameter.
@@ -917,7 +961,7 @@ namespace TS
 
       if (!TS.Utils.Assert.isString(parameter))
       {
-        throw new TS.InvalidTypeException(parameterName, "Argument '" + parameterName + "' must be string variable in function '" + functionName + "'.");
+        throw new TS.InvalidTypeException(parameterName, "Argument '" + parameterName + "' must be a string variable in function '" + functionName + "'.");
       }//END if
 
       if (TS.Utils.Assert.isNullUndefOrWhiteSpace(parameter))
@@ -1184,10 +1228,12 @@ namespace TS
     *  exceptions gets thrown. The function returns null if there is no match for the provided search pattern.
     *
     * @param {string} currency, the search pattern used to identify a currency.
+    *
     * @returns {ICurrency} | null, the identified currency, or null.
+    *
     * @throws {TS.AmbiguousResultException}
     */
-    export function findSingleCurrency(currency: string): ICurrency
+    export function findSingleCurrency(currency: string): ICurrency | null
     {
       if (Assert.isNullUndefOrWhiteSpace(currency))
       {
@@ -1218,20 +1264,24 @@ namespace TS
     /**
      * @desciption Returns the corresponding value to a given key from the specified enumeration. If the key of enumObj
      *  is invalid, the returned value will be undefined. If the key is a string and the enumeration has a name value
-     *  with a machting name, that value will be returned. If the key is a number and the enumeration has a named value
+     *  with a matching name, that value will be returned. If the key is a number and the enumeration has a named value
      *  with a matching value, the name of that value will be returned. This function does not implicitly convert
-     *  number strings to numbers. That differs from the normal enum bahavior and is by design. See example
+     *  number strings to numbers. That differs from the normal enum behavior and is by design. See example
      *
      * @example
      *
      *  enum testEnum = { ZERO, ONE, TWO };
      *
      *  testEnum[2];     // "TWO"
+     *
      *  testEnum["ONE"]; // 1
+     *
      *  testEnum["2"];   // "TWO"
      *
      *  getValueFromEnum[2];     // "TWO"
+     *
      *  getValueFromEnum["ONE"]; // 1
+     *
      *  getValueFromEnum["2"];   // undefined
      *
      * @param {string | number} key
@@ -1311,7 +1361,8 @@ namespace TS
 
       while (hexString.length > 0)
       {
-        hexValueString += hexString[0] += hexString[1];
+        hexValueString += hexString[0];
+        hexValueString += hexString[1];
         hexString = hexString.substr(2);
 
         try
@@ -1331,7 +1382,7 @@ namespace TS
 
 
     /**
-    * @description Searches for the next occurrence of 'searchString' in 'sourceString' beginning at positon
+    * @description Searches for the next occurrence of 'searchString' in 'sourceString' beginning at position
     *  'startIndex' and returns the position in the string as number. If argument 'startIndex' isn't provided, search
     *  begins at the last position in 'sourceString'. The search direction is in reverse order. That means the search
     *  starts at the provided startIndes and goes down two lower indexes during search. Returns -1 if the
@@ -1361,7 +1412,7 @@ namespace TS
         }//END if
         else
         {
-          index = startIndex;
+          index = (startIndex as number);
         }//END else
       }//END if
       else
@@ -1398,8 +1449,8 @@ namespace TS
 
 
     /**
-    * @description Returns the text representation of the given node type value. Returns the string 'undefined' if the
-    *  value of argument 'nodeType' is invalid or unknown.
+    * @description Returns the text representation of the given HTML DOM node type value. Returns the string 'undefined'
+    *  if the value of argument 'nodeType' is invalid or unknown.
     *
     * @see {@link https://developer.mozilla.org/en/docs/Web/API/Node/nodeType | MSDN }
     *
@@ -1494,9 +1545,13 @@ namespace TS
     *  rules:
     *
     * 1)  Replace all "\" by "/"
+    *
     * 2)  Replace all "/./ by "/"
+    *
     * 3)  Replace all "//" by "/";
+    *
     * 4)  Navigate up one hierarchy level for all '/../' except for those at the root level.
+    *
     * 5)  Remove trailing "/";
     *
     * @param {string} path
@@ -1543,14 +1598,18 @@ namespace TS
       {
         if (returnPath.indexOf("/../") == 0)
         {
+          //
           // Something like '/../more/path/elements'. Up navigation at the root or the path isn't possible. Simple 
           // substitution with a single slash. 
+          //
           returnPath = returnPath.substr(3);
         }
         else if ((returnPath.indexOf("/../") == 2) && (returnPath.indexOf(":") == 1))
         {
+          //
           // Something like 'A:/../'. Up navigation at the drive letter isn't possible. Simple substitution with a 
           // single slash. 
+          //
           returnPath = returnPath.substring(0, 2) + returnPath.substr(5);
         }
         else
@@ -1586,7 +1645,7 @@ namespace TS
 
     /**
     * @description Returns a string which is padded with leading characters as specified in argument 'fillChar' until
-    *  the length provided in argument 'length'is reached. The function returns a copy of the source string if the
+    *  the length provided in argument 'length' is reached. The function returns a copy of the source string if the
     *  values of the arguments 'fillChar' or 'length' are invalid. A copy of the 'source' string is also returned if
     *  the length of the source is greater or equal the value of the 'length' parameter. The function doesn't truncate
     *  the string. The function returns a string consisting of a concatenation of 'fillChar' up to the length given in
@@ -1647,8 +1706,8 @@ namespace TS
 
 
     /**
-    * @description Retuns a string representation in hexadecimal notation of the unsigned 8 bit value provided in
-    *  argument 'value'. The returned string has a fixed lenght of 2 characters. Number values below 16 are padded with
+    * @description Returns a string representation in hexadecimal notation of the unsigned 8 bit value provided in
+    *  argument 'value'. The returned string has a fixed length of 2 characters. Number values below 16 are padded with
     *  a leading '0' character.
     *
     * @param {number}, value
@@ -1692,7 +1751,7 @@ namespace TS
       reverseByteArray = new Array<number>();
       while (byteArray.length > 0)
       {
-        reverseByteArray.push(byteArray.pop());
+        reverseByteArray.push(byteArray.pop() as number);
       }
 
       return TS.Utils.byteArrayToUInt(reverseByteArray);
@@ -1720,7 +1779,7 @@ namespace TS
 
       if (value > 0xFFFFFFFF)
       {
-        throw new TS.ArgumentOutOfRangeException("value", value, "Argument 'value' exceeded the range of an unsinged 16 bit integer in function 'TS.Utils.UInt32To4ByteArray'.");
+        throw new TS.ArgumentOutOfRangeException("value", value, "Argument 'value' exceeded the range of an unsigned 16 bit integer in function 'TS.Utils.UInt32To4ByteArray'.");
       }//END if
 
       resultArray = UIntToByteArray(value);
@@ -1733,8 +1792,8 @@ namespace TS
 
 
     /**
-    * @description Retuns a string representation in hexadecimal notation of the unsingned 32 bit integer value
-    *  provided in arguemnt 'value'. The returned string has a fixed lenght of 8 characters. The returned string will
+    * @description Returns a string representation in hexadecimal notation of the unsigned 32 bit integer value
+    *  provided in argument 'value'. The returned string has a fixed length of 8 characters. The returned string will
     *  be padded with as much leading '0' as necessary to reach the length of 8 characters.
     *
     * @param {number}, value

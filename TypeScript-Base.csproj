@@ -10,7 +10,7 @@
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
-    <TypeScriptToolsVersion>1.8</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>2.0</TypeScriptToolsVersion>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
@@ -25,21 +25,16 @@
     <TypeScriptCompile Include="Encoding\Base64.ts" />
     <TypeScriptCompile Include="Encoding\UTF.ts" />
     <TypeScriptCompile Include="Exception\Exception.ts" />
+    <TypeScriptCompile Include="IO\IStream.ts" />
+    <TypeScriptCompile Include="IO\Stream.ts" />
+    <TypeScriptCompile Include="IO\StreamStateEnum.ts" />
     <TypeScriptCompile Include="TypeCode\UInt64.ts" />
     <TypeScriptCompile Include="Utils\Assert.ts" />
     <TypeScriptCompile Include="Utils\Utils.ts" />
     <TypeScriptCompile Include="_references.ts" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="web.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="web.Debug.config">
-      <DependentUpon>web.config</DependentUpon>
-    </None>
-    <None Include="web.Release.config">
-      <DependentUpon>web.config</DependentUpon>
-    </None>
+    <Content Include="README.md" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">12.0</VisualStudioVersion>
@@ -171,6 +166,13 @@
     -->
     <TypeScriptNoResolve>
     </TypeScriptNoResolve>
+	<!--
+    type: boolean,
+	default: alse,
+	description: In strict null checking mode, the null and undefined values are not in the domain of every type and are only assignable to themselves and any (the one exception
+                 being that undefined is also assignable to void).
+	-->
+	<TypeScriptStrictNullChecks>True</TypeScriptStrictNullChecks>
     <!-- 
     type: string, 
     default: null, 
@@ -328,4 +330,12 @@
     <TypeScriptSourceMap>false</TypeScriptSourceMap>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
 </Project>

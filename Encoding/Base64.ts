@@ -6,7 +6,7 @@ namespace TS
 
     /**
     * @description  Normalizes the string provided in argument 'data'. Normalization comprehends the removal of line 
-    *  breaks and white space. The transformation from URL compliant encoding to normal base64 endcoding and the
+    *  breaks and white space. The transformation from URL compliant encoding to normal base64 encoding and the
     *  addition of missing pad characters if necessary. In a last step that function checks whether the given data
     *  string is a valid base64 encoded string or not. The function throws a 'TS.InvalidFormatException' if the input
     *  string is invalid. Returns the normalized input string as result.
@@ -77,6 +77,7 @@ namespace TS
       *
       * @example
       *  var byteArray = System.Convert.FromBase64String(data));
+      *
       *  var resultString = System.Text.Encoding.UTF8.GetString(byteArray);
       *
       * @static
@@ -100,7 +101,7 @@ namespace TS
 
         if (!TS.Utils.Assert.isString(data))
         {
-          throw new TS.InvalidTypeException("data", data, "The argument 'data' must be a valid string. Error occured in function TS.Encoding.Base64.decode'.");
+          throw new TS.InvalidTypeException("data", data, "The argument 'data' must be a valid string. Error occurred in function TS.Encoding.Base64.decode'.");
         }//END if
 
 
@@ -114,7 +115,7 @@ namespace TS
         }//END try
         catch (Exception)
         {
-          throw new InvalidFormatException("data", data, "The argument 'data' must be a valid Base64 encoded string. Error occured in function TS.Encoding.Base64.decodey'. See the inner exception for further details.", Exception);
+          throw new InvalidFormatException("data", data, "The argument 'data' must be a valid Base64 encoded string. Error occurred in function TS.Encoding.Base64.decodey'. See the inner exception for further details.", Exception);
         }//END catch
 
         //
@@ -128,7 +129,7 @@ namespace TS
         }//END try
         catch (Exception)
         {
-          throw new InvalidFormatException("data", data, "The argument 'data' appears to be invalid. Error occured in function TS.Encoding.Base64.decode'. See the inner exception for further details.", Exception);
+          throw new InvalidFormatException("data", data, "The argument 'data' appears to be invalid. Error occurred in function TS.Encoding.Base64.decode'. See the inner exception for further details.", Exception);
         }//END catch
 
         return result;
@@ -171,7 +172,7 @@ namespace TS
 
         if (!TS.Utils.Assert.isString(data))
         {
-          throw new TS.InvalidTypeException("data", data, "The argument 'data' must be a valid string. Error occured in function TS.Encoding.Base64.decodeToByteArray'.");
+          throw new TS.InvalidTypeException("data", data, "The argument 'data' must be a valid string. Error occurred in function TS.Encoding.Base64.decodeToByteArray'.");
         }//END if
 
         //May throw TS.InvalidFormatException
@@ -181,7 +182,7 @@ namespace TS
         }//END try
         catch (Exception)
         {
-          throw new TS.InvalidFormatException("data", data, "The argument 'data' must be a valid Base64 encoded string. Error occured in function TS.Encoding.Base64.decodeToByteArray'. See the inner exception for further details.", Exception);
+          throw new TS.InvalidFormatException("data", data, "The argument 'data' must be a valid Base64 encoded string. Error occurred in function TS.Encoding.Base64.decodeToByteArray'. See the inner exception for further details.", Exception);
         }//END catch
 
         if (dataString.length == 0)
@@ -242,10 +243,11 @@ namespace TS
 
       /**
       * @description Encodes the given UTF-16 string to UTF-8 in a first step and then to base64 in a second step and
-      *  retuns that encoded string. The encode function is functional equivalent to the following C# code:
+      *  returns that encoded string. The encode function is functional equivalent to the following C# code:
       *
       * @example
       *  var byteArray = System.Text.Encoding.UTF8.GetBytes(data);
+      *
       *  var resultString = System.Convert.ToBase64String(byteArray);
       *
       * @static
@@ -278,7 +280,7 @@ namespace TS
 
         if (!TS.Utils.Assert.isString(data))
         {
-          throw new TS.InvalidTypeException("data", data, "The argument 'data' in function TS.Encoding.Base64.encode' must be a valid string. Error occured in function 'TS.Encoding.Base64.encode'.");
+          throw new TS.InvalidTypeException("data", data, "The argument 'data' in function TS.Encoding.Base64.encode' must be a valid string. Error occurred in function 'TS.Encoding.Base64.encode'.");
         }//END if
 
         index = 0;
@@ -357,7 +359,7 @@ namespace TS
 
         if (!TS.Utils.Assert.isString(data))
         {
-          throw new TS.InvalidTypeException("data", data, "The argument 'data' must be a valid string. Error occured in function 'TS.Encoding.Base64.encodeURLCompliant'.");
+          throw new TS.InvalidTypeException("data", data, "The argument 'data' must be a valid string. Error occurred in function 'TS.Encoding.Base64.encodeURLCompliant'.");
         }//END if
 
         return makeURLCompliant(TS.Encoding.Base64.encode(data));

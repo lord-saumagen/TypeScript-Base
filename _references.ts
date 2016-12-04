@@ -4,3 +4,6 @@
 /// <reference path="./TypeCode/UInt64.ts" />
 /// <reference path="./Encoding/Base64.ts" />
 /// <reference path="./Encoding/UTF.ts" />
+/// <reference path="./IO/StreamStateEnum.ts" />
+/// <reference path="./IO/IStream.ts" />
+/// <reference path="./IO/Stream.ts" />
