@@ -3,7 +3,7 @@ namespace TS
 {
 
   /**
-   * @description The module 'Utils' hosts a collection of functions which offer solutions for common problems or
+   * @description The module 'Utils' combines some functions which offer solutions for common problems or
    *  reoccurring tasks which are not class specific. Since they are not class specific, they are also not part of a
    *  class. They are simply collected in this file and are part of the namespace. You can consider all of this
    *  functions as static if you like, because you can call them without a prior instantiation of an object.
@@ -16,16 +16,102 @@ namespace TS
     */
     export interface ICurrency
     {
+      /** The name of the currency */
       Name: string,
+      /** The international three character currency code */
       Code: string,
+      /** The currency symbol if available */
       Symbol: string
     }
 
 
     /**
-     * @description An array of currencies as defined in ISO 4217
+    * @enum NodeTypeEnum, 
+    *
+    * @description This enum is nothing more than a shorthand reference to the node types as defined in
+    *  Node.prototype. See also the description at MDN.
+    *
+    * @see {@link https://developer.mozilla.org/en/docs/Web/API/Node/nodeType | MDN}
+    */
+    export enum NodeTypeEnum
+    {
+      /**
+      * @description An Element node such as &lt;p&gt; or &lt;div&gt;
+      */
+      ELEMENT_NODE = Node.prototype.ELEMENT_NODE,
+
+      /** 
+      * @description The actual Text of Element or Attr
+      */
+      TEXT_NODE = Node.prototype.TEXT_NODE,
+
+      /**
+      * @description A ProcessingInstruction of an XML document such as <?xml-stylesheet ... ?> declaration
+      */
+      PROCESSING_INSTRUCTION_NODE = Node.prototype.PROCESSING_INSTRUCTION_NODE,
+
+      /**
+      * @description A Comment node
+      */
+      COMMENT_NODE = Node.prototype.COMMENT_NODE, 
+
+      /**
+      * @description A Document node
+      */
+      DOCUMENT_NODE = Node.prototype.DOCUMENT_NODE,
+
+      /**
+      * @description A DocumentType node e.g. <!DOCTYPE html> for HTML5 documents
+      */
+      DOCUMENT_TYPE_NODE = Node.prototype.DOCUMENT_TYPE_NODE,
+
+      /**
+      * @description A DocumentFragment node
+      */
+      DOCUMENT_FRAGMENT_NODE = Node.prototype.DOCUMENT_FRAGMENT_NODE,
+
+      /**
+      * @description An Attribute of an Element.
+      *
+      * @deprecated The element attributes are no longer implementing the Node interface in DOM4 specification
+      */
+      ATTRIBUTE_NODE = Node.prototype.ATTRIBUTE_NODE,
+
+      /** 
+      * @description A CDATASection. 
+      *
+      * @deprecated Removed in DOM4 specification
+      */
+      CDATA_SECTION_NODE = Node.prototype.CDATA_SECTION_NODE,
+
+      /** 
+      * @description An XML Entity Reference node.
+      *
+      * @deprecated Removed in DOM4 specification
+      */
+      ENTITY_REFERENCE_NODE = Node.prototype.ENTITY_REFERENCE_NODE,
+
+      /** 
+      * @description An XML <!ENTITY ...> node.
+      *
+      * @deprecated Removed in DOM4 specification
+      */
+      ENTITY_NODE = Node.prototype.ENTITY_NODE,
+
+      /**
+      * @description An XML <!NOTATION ...> node.
+      *
+      * @deprecated Removed in DOM4 specification
+      */
+      NOTATION_NODE = Node.prototype.NOTATION_NODE
+    }
+
+
+    /**
+     * @description An array of TS.Utils.ICurrency objects, as defined in ISO 4217
      *
      * @see {@link http://www.iso.org/iso/home/standards/currency_codes.htm | ISO}
+     * @see {TS.Utils.ICurrency}
      */
     export const currencyArray: Array<ICurrency> = new Array<ICurrency>(
       { Name: "United Arab Emirates Dirham", Code: "AED", Symbol: "" },
@@ -192,6 +278,7 @@ namespace TS
     );
 
 
+
     /**
     * @description Searches for all occurrences of 'searchString' in 'sourceString' and returns an array of the
     *  indexes where the search string occurred in the sourceString.
@@ -285,15 +372,46 @@ namespace TS
     * @throws {TS.ArgumentNullOrUndefinedException}
     * @throws {TS.InvalidTypeException }
     */
-    export function byteArrayToBitString(unsignedByteArray: Array<number>): string
+    export function byteArrayToBitString(unsignedByteArray: Array<number> | Uint8Array): string
     {
       let resultString: string;
+      let localByteArray: Array<number>;
 
       TS.Utils.checkUByteArrayParameter("byteArray", unsignedByteArray, "TS.Utils.byteArrayToUInt");
 
+      localByteArray = Array.from(unsignedByteArray);
       resultString = "";
 
-      unsignedByteArray.forEach((value, index, array) => resultString += byteToBitString(value));
+      localByteArray.forEach((value, index, array) => resultString += byteToBitString(value));
+
+      return resultString;
+    }
+
+
+    /**
+    * @description Converts an array of unsigned byte values into a hexadecimal string representation.The function
+    *  throws an exception if the value in argument 'unsignedByteArray' is not a valid byte array or empty.
+    *
+    * @param {Array<number> | Uint8Array} byteArray, An array of unsigned byte values.
+    *
+    * @returns {number}, The result value as unsigned integer.
+    *
+    * @throws {TS.ArgumentNullOrUndefinedException}
+    * @throws {TS.InvalidTypeException }
+    */
+    export function byteArrayToHexString(unsignedByteArray: Array<number> | Uint8Array): string
+    {
+      let resultString: string;
+      let localByteArray: Array<number>;
+
+      TS.Utils.checkUByteArrayParameter("byteArray", unsignedByteArray, "TS.Utils.byteArrayToHexString");
+
+      localByteArray = new Array<number>();
+      resultString = "";
+
+      localByteArray = Array.from(unsignedByteArray);
+
+      localByteArray.forEach((value, index, array) => resultString += UByteToHexString(value));
 
       return resultString;
     }
@@ -304,7 +422,7 @@ namespace TS
     *  exception if the value in argument 'unsignedByteArray' is not a valid byte array or empty. The function throws
     *  a 'TS.ArgumentOutOfRangeException' if the conversion exceeds the maximum number range. (Number.MAX_SAFE_INTEGER)
     *
-    * @params {Array<number>} byteArray, An array of unsigned byte values.
+    * @param {Array<number> | Uint8Array} byteArray, An array of unsigned byte values.
     *
     * @returns {number}, The result value as unsigned integer.
     *
@@ -312,19 +430,29 @@ namespace TS
     * @throws {TS.InvalidTypeException }
     * @throws {TS.ArgumentOutOfRangeException}
     */
-    export function byteArrayToUInt(unsignedByteArray: Array<number>): number
+    export function byteArrayToUInt(unsignedByteArray: Array<number> | Uint8Array): number
     {
       let resultNumber: number;
       let factor: number;
+      let localByteArray: Array<number>;
 
       TS.Utils.checkUByteArrayParameter("byteArray", unsignedByteArray, "TS.Utils.byteArrayToUInt");
 
       resultNumber = 0;
       factor = 0;
 
-      while (unsignedByteArray.length > 0)
+      try
       {
-        resultNumber += Math.pow(256, factor) * unsignedByteArray.pop();
+        localByteArray = Array.from(unsignedByteArray);
+      }
+      catch(ex)
+      {
+        localByteArray = new Array<number>();
+      }
+
+      while (localByteArray.length > 0)
+      {
+        resultNumber += Math.pow(256, factor) * localByteArray.pop();
         factor++;
 
         if (resultNumber > Number.MAX_SAFE_INTEGER)
@@ -358,6 +486,64 @@ namespace TS
       resultString += unsignedByteValue.toString(2);
       resultString = padLeft(resultString, "0", 8);
       return resultString;
+    }
+
+
+    /**
+    * @description Checks the number of arguments available in the provided parameter 'args' and throws a
+    *  'TS.InvalidInvokationException' if the number of arguments is not in the range of [minNumber..maxNumber].
+    *
+    * @param {IArguments} args
+    * @param {number} minNumber
+    * @param {number} maxNumber
+    *
+    * @throws {TS.InvalidInvokationException}
+    */
+    export function checkArgumentsLength(args: IArguments, minNumber: number, maxNumber: number, functionName: string)
+    {
+      let min: number;
+      let max: number;
+      let swap: number;
+      let argsLength: number;
+
+      if (TS.Utils.Assert.isNullOrUndefined(minNumber))
+      {
+        min = 0;
+      }
+      else
+      {
+        min = Math.abs(minNumber);
+      }
+
+      if (TS.Utils.Assert.isNullOrUndefined(maxNumber))
+      {
+        max = 0;
+      }
+      else
+      {
+        max = Math.abs(maxNumber);
+      }
+
+
+      if (min > max)
+      {
+        swap = max;
+        max = min;
+        min = swap;
+      }
+
+      argsLength = args.length;
+
+      if (argsLength < min)
+      {
+        throw new TS.InvalidInvokationException("The function '" + functionName + "' requires at least " + min.toString() + " argument" + ((min > 1) ? "s." : "."));
+      }
+
+      if (argsLength > max)
+      {
+        throw new TS.InvalidInvokationException("The function '" + functionName + "' does not support more than " + max.toString() + " argument" + ((max > 1) ? "s." : "."));
+      }
+
     }
 
 
@@ -736,7 +922,7 @@ namespace TS
     /**
     * @description Checks the value of argument 'parameter' against null and undefined and throws a
     *  'TS.ArgumentNullOrUndefinedException' if the argument is either null or undefined.
-    *  Checks whether the value of argument 'type' is a valid type. Throws a 'TS.InvalidInvocationException' if not.
+    *  Checks whether the value of argument 'type' is a valid type. Throws a 'TS.InvalidInvokationException' if not.
     *  Checks whether the value of argument 'parameter' is an instance of the type provide in argument 'type'.
     *  Throws a 'TS.InvalidTypeException' if not.
     *  The exception messages use the 'parameterName' and 'functionName' in its message to signal which parameter
@@ -748,7 +934,7 @@ namespace TS
     * @param {string} functionName
     *
     * @throws {TS.ArgumentNullOrUndefinedException}
-    * @throws {TS.InvalidInvocationException}
+    * @throws {TS.InvalidInvokationException}
     * @throws {TS.InvalidTypeException}
     */
     export function checkInstanceOfParameter(parameterName: string, parameter: any, type: Object, functionName: string): void
@@ -757,7 +943,7 @@ namespace TS
 
       if (!TS.Utils.Assert.isFunction(type))
       {
-        throw new TS.InvalidInvocationException("Argument 'type' must be a valid type in function 'TS.Utils.checkInstanceOf'.");
+        throw new TS.InvalidInvokationException("Argument 'type' must be a valid type in function 'TS.Utils.checkInstanceOf'.");
       }//END if
 
       if (!TS.Utils.Assert.isInstanceOf(parameter, type))
@@ -1125,6 +1311,9 @@ namespace TS
 
     /**
     * @description Creates a version 4 random GUID which is returned as string in a canonical representation.
+    *  'xxxxxxxx-xxxx-Mxxx-Nxxx-xxxxxxxxxxxx' is an example for that string. All x are hexadecimal values in
+    *  the range of [0..f]. M is the version number of the GUID as hexadecimal value. N is the variant number
+    *  encoded in the first two bit of the hexadecimal value at the given position.
     *
     * @see {@link http://en.wikipedia.org/wiki/Universally_unique_identifier#Version_4_.28random.29 | Wikipedia }
     * @see {@link http://www.ietf.org/rfc/rfc4122.txt | IETF }
@@ -1134,41 +1323,56 @@ namespace TS
     export function createGUID(): string
     {
       let index: number;
-      let charSetArray: Array<string> = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"];
-      let charSetVariantArray: Array<string> = ["8", "9", "A", "B"];
+      let charSetArray: Array<string> = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"];
+      //
+      // Array of values which have a binary representation of '10' in the first tow bit.
+      // Meaning: 8 = 0b1000, 09 = 0b1001, ... but c = 0b1100.
+      // Using one of these values at the 'N' position will set the variant number to 1.
+      //
+      let charSetVariantArray: Array<string> = ["8", "9", "a", "b"];
       let returnString: string;
 
 
       returnString = "";
       for (index = 0; index < 8; index++)
       {
-        returnString += charSetArray[Math.floor(Math.random() * 16)];
+        returnString += charSetArray[Math.ceil(Math.random() * 16)];
       }//END for
+
       returnString += "-";
 
       for (index = 0; index < 4; index++)
       {
-        returnString += charSetArray[Math.floor(Math.random() * 16)];
+        returnString += charSetArray[Math.ceil(Math.random() * 16)];
       }//END for
+
+      //
+      // Setting the version number.
+      //
       returnString += "-4";
 
       for (index = 0; index < 3; index++)
       {
-        returnString += charSetArray[Math.floor(Math.random() * 16)];
+        returnString += charSetArray[Math.ceil(Math.random() * 16)];
       }//END for
+
       returnString += "-";
 
-      returnString += charSetVariantArray[Math.floor(Math.random() * 4)];
+      //
+      // Setting the variant number.
+      //
+      returnString += charSetVariantArray[Math.ceil(Math.random() * 4)];
 
-      for (index = 0; index < 4; index++)
+      for (index = 0; index < 3; index++)
       {
-        returnString += charSetArray[Math.floor(Math.random() * 15)];
+        returnString += charSetArray[Math.ceil(Math.random() * 16)];
       }//END for
+
       returnString += "-";
 
       for (index = 0; index < 12; index++)
       {
-        returnString += charSetArray[Math.floor(Math.random() * 16)];
+        returnString += charSetArray[Math.ceil(Math.random() * 16)];
       }//END for
 
       return returnString;
@@ -1269,8 +1473,9 @@ namespace TS
      *  number strings to numbers. That differs from the normal enum behavior and is by design. See example
      *
      * @example
+     *```typescript
      *
-     *  enum testEnum = { ZERO, ONE, TWO };
+     *  enum testEnum { ZERO, ONE, TWO };
      *
      *  testEnum[2];     // "TWO"
      *
@@ -1283,6 +1488,7 @@ namespace TS
      *  getValueFromEnum["ONE"]; // 1
      *
      *  getValueFromEnum["2"];   // undefined
+     *```
      *
      * @param {string | number} key
      * @param {any} enumObj
@@ -1322,6 +1528,31 @@ namespace TS
       }
 
       return undefined;
+    }
+
+
+    export function hasProperty(source: Object, key: string): boolean
+    {
+      if (!TS.Utils.Assert.isObject(source))
+      {
+        return false;
+      }
+
+      if (TS.Utils.Assert.isNullUndefOrWhiteSpace(key))
+      {
+        return false;
+      }
+
+      if (source.hasOwnProperty(key))
+      {
+        return true;
+      }
+      else if (Object.getPrototypeOf(source) != null)
+      {
+        return TS.Utils.hasProperty(Object.getPrototypeOf(source), key);
+      }
+
+      return false;
     }
 
 
@@ -1420,10 +1651,14 @@ namespace TS
         index = sourceString.length;
       }//END else
 
-      if (startIndex - searchString.length < 0)
+      if (TS.Utils.TypeGuards.isNumber(startIndex))
       {
-        return -1;
-      }//END if
+        if (startIndex - searchString.length < 0)
+        {
+          return -1;
+        }//END if
+      }
+
 
       if (sourceString.length < searchString.length)
       {
@@ -1460,83 +1695,17 @@ namespace TS
     */
     export function nodeTypeToString(nodeType: number): string
     {
-      let resultString: string = "";
-
-      switch (nodeType)
+      if (!TS.Utils.Assert.isUnsignedByteValue(nodeType))
       {
-        case 1:
-          {
-            resultString = "ELEMENT_NODE";
-            break;
-          };
-        case 2:
-          {
-            /* DEPRECATED */
-            resultString = "ATTRIBUTE_NODE";
-            break;
-          };
-        case 3:
-          {
-            resultString = "TEXT_NODE";
-            break;
-          };
-        case 4:
-          {
-            /* DEPRECATED */
-            resultString = "CDATA_SECTION_NODE";
-            break;
-          };
-        case 5:
-          {
-            /* DEPRECATED */
-            resultString = "ENTITY_REFERENCE_NODE";
-            break;
-          };
-        case 6:
-          {
-            /* DEPRECATED */
-            resultString = "ENTITY_NODE";
-            break;
-          };
-        case 7:
-          {
-            resultString = "PROCESSING_INSTRUCTION_NODE";
-            break;
-          };
-        case 8:
-          {
-            resultString = "COMMENT_NODE";
-            break;
-          };
-        case 9:
-          {
-            resultString = "DOCUMENT_NODE";
-            break;
-          };
-        case 10:
-          {
-            resultString = "DOCUMENT_TYPE_NODE";
-            break;
-          };
-        case 11:
-          {
-            resultString = "DOCUMENT_FRAGMENT_NODE";
-            break;
-          };
-        case 12:
-          {
-            /* DEPRECATED */
-            resultString = "NOTATION_NODE";
-            break;
-          };
-        default:
-          {
-            resultString = "undefined";
-            break;
-          }
+        return "undefined";
+      };
+
+      if (TS.Utils.Assert.isValueOfEnum(nodeType, TS.Utils.NodeTypeEnum))
+      {
+        return TS.Utils.getValueFromEnum(nodeType, TS.Utils.NodeTypeEnum) as string;
       }
 
-      return resultString;
+      return "undefined";
     }
 
 
@@ -1706,6 +1875,63 @@ namespace TS
 
 
     /**
+    * @description Replaces all occurrences of 'searchPattern' by 'replacePattern' in the source string and returns
+    *  the resulting string.
+    *
+    * @param {string} source
+    * @param {string} searchPattern
+    * @param {string} replaceString
+    *
+    * @returns {string}
+    *
+    * @throws {TS.ArgumentNullOrUndefinedException}
+    * @throws {TS.ArgumentNullUndefOrWhiteSpaceException}
+    * @throws {TS.InvalidTypeException}
+    * @throws {TS.InvalidInvokationException}
+    */
+    export function replaceAll(source: string, searchPattern: string, replaceString: string)
+    {
+      let resultString: string;
+
+      TS.Utils.checkArgumentsLength(arguments, 3, 3, "TS.Utils.replaceAll");
+      TS.Utils.checkStringParameter("source", source, "TS.Utils.replaceAll");
+      if (!TS.Utils.Assert.isString(searchPattern))
+      {
+        throw new TS.InvalidTypeException("searchPattern", searchPattern, "Argument 'searchPattern' must be a valid string in function 'TS.Utils.replaceAll'.");
+      }
+
+      if (!TS.Utils.Assert.isString(replaceString))
+      {
+        throw new TS.InvalidTypeException("replaceString", replaceString, "Argument 'replaceString' must be a valid string in function 'TS.Utils.replaceAll'.");
+      }
+
+      if (source.length == 0)
+      {
+        return source;
+      }
+
+      if (searchPattern.length == 0)
+      {
+        return source;
+      }
+
+      if (searchPattern === replaceString)
+      {
+        return source;
+      }
+
+      resultString = source;
+
+      while (resultString.indexOf(searchPattern) > -1)
+      {
+        resultString = resultString.replace(searchPattern, replaceString);
+      }
+
+      return resultString;
+    }
+
+
+    /**
     * @description Returns a string representation in hexadecimal notation of the unsigned 8 bit value provided in
     *  argument 'value'. The returned string has a fixed length of 2 characters. Number values below 16 are padded with
     *  a leading '0' character.
@@ -1744,7 +1970,7 @@ namespace TS
       TS.Utils.checkUIntNumberParameter("value", value, "TS.Utils.UInt32SwapSignificantByteOrder");
       if (value > 0xFFFFFFFF)
       {
-        throw new TS.ArgumentOutOfRangeException("value", value, "Argument 'value' must not be grater than 0xFFFFFFFF in oder to be accepted as an unsigned 32 bit value. The error occured in function 'TS.Utils.UInt32SwapSignificantByteOrder'.");
+        throw new TS.ArgumentOutOfRangeException("value", value, "Argument 'value' must not be grater than 0xFFFFFFFF in oder to be accepted as an unsigned 32 bit value. The error occurred in function 'TS.Utils.UInt32SwapSignificantByteOrder'.");
       }
 
       byteArray = TS.Utils.UInt32To4ByteArray(value);
@@ -1755,6 +1981,68 @@ namespace TS
       }
 
       return TS.Utils.byteArrayToUInt(reverseByteArray);
+    }
+
+
+    /**
+    * @description Converts the unsigned 16 bit integer number in argument 'value' into an array of 2 byte values and
+    *  returns that array. The array will be padded with leading 0 byte values for lower numbers until the length of 2
+    *  byte values is reached.
+    *
+    * @param {number} value
+    *
+    * @returns {Array<number>}, An array of 2 byte values.
+    *
+    * @throws {TS.ArgumentNullOrUndefinedException}
+    * @throws {TS.InvalidTypeException}
+    * @throws {TS.ArgumentOutOfRangeException}
+    */
+    export function UInt16To2ByteArray(value: number): Array<number>
+    {
+      let resultArray: Array<number>;
+
+      TS.Utils.checkUIntNumberParameter("value", value, "TS.Utils.UInt16To2ByteArray");
+
+      if (value > 0xFFFF)
+      {
+        throw new TS.ArgumentOutOfRangeException("value", value, "Argument 'value' exceeded the range of an unsigned 16 bit integer in function 'TS.Utils.UInt16To2ByteArray'.");
+      }//END if
+
+      resultArray = UIntToByteArray(value);
+      while (resultArray.length < 2)
+      {
+        resultArray.unshift(0);
+      }//END while
+      return resultArray;
+    }
+
+
+    /**
+    * @description Returns a string representation in hexadecimal notation of the unsigned 16 bit integer value
+    *  provided in argument 'value'. The returned string has a fixed length of 4 characters. The returned string will
+    *  be padded with as much leading '0' as necessary to reach the length of 4 characters.
+    *
+    * @param {number}, value
+    *
+    * @returns {string}, A string of 4 characters representing the UInt16 value.
+    *
+    * @throws {TS.ArgumentNullOrUndefinedException}
+    * @throws {TS.InvalidTypeException}
+    * @throws {TS.ArgumentOutOfRangeException}
+    */
+    export function UInt16ToHexString(value: number): string
+    {
+      let resultString: string;
+
+      TS.Utils.checkUIntNumberParameter("value", value, "TS.Utils.UInt16ToHexString");
+
+      if (value > 0xFFFF)
+      {
+        throw new TS.ArgumentOutOfRangeException("value", value, "Argument 'value' exceeded the range of an unsigned 16 bit integer in function 'TS.Utils.UInt16ToHexString'.");
+      }//END if
+
+      resultString = value.toString(16);
+      return TS.Utils.padLeft(resultString, "0", 4);
     }
 
 
@@ -1779,7 +2067,7 @@ namespace TS
 
       if (value > 0xFFFFFFFF)
       {
-        throw new TS.ArgumentOutOfRangeException("value", value, "Argument 'value' exceeded the range of an unsigned 16 bit integer in function 'TS.Utils.UInt32To4ByteArray'.");
+        throw new TS.ArgumentOutOfRangeException("value", value, "Argument 'value' exceeded the range of an unsigned 32 bit integer in function 'TS.Utils.UInt32To4ByteArray'.");
       }//END if
 
       resultArray = UIntToByteArray(value);

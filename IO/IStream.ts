@@ -4,6 +4,11 @@ namespace TS
   export namespace IO
   {
 
+    /**
+    * @interface TS.IO.IStream
+    *
+    * @description Common interface which must be implemented by all 'Stream' types.
+    */
     export interface IStream<T>
     {
       /**
@@ -54,7 +59,7 @@ namespace TS
       /**
       * @description A flag which tells whether the stream is ready for write operations. If 'canWrite' is true, that
       *  doesn't necessarily mean that there is enough buffer space for your next write operation if you are in
-      *  synchronous mode.
+      *  synchronous mode. You should check the free buffer size before.
       *
       * @see freeBufferSize
       */
@@ -79,6 +84,7 @@ namespace TS
       * @description A property which reveals the error which locked the stream.
       */
       readonly error: TS.Exception | null;
+
     }
 
   }//END namespace

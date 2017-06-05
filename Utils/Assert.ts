@@ -4,7 +4,7 @@
   {
     /**
     * @description A collection of assertion functions. Those are functions which take on argument and return a
-    *  boolean value. The boolean value describes whether the argument satisfies a specific condition or not.
+    *  boolean value. The boolean value describes whether the argument satisfies a specific condition.
     */
     export namespace Assert
     {
@@ -73,7 +73,6 @@
 
         return true;
       }
-
 
 
       /**
@@ -212,6 +211,55 @@
         }//END if
 
         return ((source >= -127) && (source <= 127));
+      }
+
+
+      /**
+      * @description Returns true if the type of the argument 'source' is a string which qualifies as canonical GUID 
+      *  string, otherwise false;
+      *
+      * @param {any} source
+      *
+      * @returns {boolean}
+      */
+      export function isCanonicalGUIDString(source: any): boolean
+      {
+        let stringArray: Array<string>;
+        let sourceString: string;
+
+        if (TS.Utils.Assert.isNullUndefOrWhiteSpace(source))
+        {
+          return false;
+        }//END if
+
+        sourceString = source as string;
+
+        if (sourceString.length != 36)
+        {
+          return false;
+        }
+
+        if ((sourceString.charAt(8) != "-") || (sourceString.charAt(13) != "-") || (sourceString.charAt(18) != "-") || (sourceString.charAt(23) != "-"))
+        {
+          return false;
+        }
+
+        stringArray = sourceString.split("-");
+
+        if (stringArray.length != 5)
+        {
+          return false;
+        }
+
+        for (let partString of stringArray)
+        {
+          if (!TS.Utils.Assert.isHexString(partString))
+          {
+            return false;
+          }
+        }
+
+        return true;
       }
 
 
@@ -531,6 +579,32 @@
 
 
       /**
+      * @description Returns true if the type of the argument 'source' is a TS.TypeCode.GUID object type, otherwise false.
+      *
+      * @param {any} source
+      *
+      * @returns {boolean}
+      */
+      export function isGUID(source: any): boolean
+      {
+        if (TS.Utils.Assert.isNullOrUndefined(source))
+        {
+          return false;
+        }//END if
+
+        if (TS.Utils.Assert.isObject(source))
+        {
+          if (isInstanceOf(source, TS.TypeCode.GUID))
+          {
+            return true;
+          }
+        }
+
+        return false;
+      }
+
+
+      /**
       * @description Returns true if the type of the argument 'source' is a none empty hexadecimal string. If the
       *  string contains other characters than [0-9, A-F, a-f], even white space, the return value will be false.
       *
@@ -608,6 +682,45 @@
       export function isIntegerNumber(source: any): boolean
       {
         return Number.isSafeInteger(source);
+      }
+
+
+      /**
+      * @description Returns true if the value of the argument 'source' is a string which matches one of the following
+      *  formats:
+      *  - '01:23:45:67:89:AB'
+      *  - '01-23-45-67-89-AB'
+      *  The test is not case sensitive. You might use upper case or lower case hex characters.
+      *
+      * @see {@link https://standards.ieee.org/develop/regauth/tut/eui48.pdf | IEEE}
+      * @param {any} source
+      *
+      * @returns {boolean}
+      */
+      export function isMACAddressString(source: any): boolean
+      {
+        let sourceString: string;
+
+        if (!TS.Utils.Assert.isString(source))        
+        {
+          return false;
+        }
+
+        sourceString = (source as string).trim();
+        sourceString = TS.Utils.replaceAll(sourceString, ":", "");
+        sourceString = TS.Utils.replaceAll(sourceString, "-", "");
+
+        if (sourceString.length != 12)
+        {
+          return false;
+        }
+
+        if (TS.Utils.Assert.isHexString(sourceString))
+        {
+          return true;
+        }
+
+        return false;
       }
 
 
@@ -795,6 +908,7 @@
       * @see TS.Utils.Assert.isNumberValue
       *
       * @param {any} source
+      *
       * @returns {boolean}
       */
       export function isNumberObject(source: any): boolean
@@ -861,10 +975,11 @@
 
       /**
       * @description Returns true if the type of argument 'source' is a plain object otherwise false. A plain object is
-      *  an object without a prototype. It is either a literal object or an object created with 'Object.create'
+      *  an object without a prototype. It is either a literal object or an object created with the 'Object.create'
       *  function called with a null argument.
       *
       * @example
+      * ```typescript
       *
       * function Foo() {
       *   this.a = 1;
@@ -877,6 +992,7 @@
       * isPlainObject({ 'x': 0, 'y': 0 }) => true
       *
       * isPlainObject(Object.create(null)) => true
+      *```
       *
       * @param {any} source
       *
@@ -908,6 +1024,7 @@
       * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures | JavaScript data types and data structures}
       *
       * @example
+      * ```typescript
       *
       * isPrimitiveType(true) => true
       *
@@ -930,6 +1047,7 @@
       * isPrimitiveType(new Number(13)) => false
       *
       * isPrimitiveType(new String("two")) => false
+      *```
       *
       * @param {any} source
       *
@@ -960,6 +1078,25 @@
         if (TS.Utils.Assert.isSymbol(source))
         {
           return true;
+        }
+
+        return false;
+      }
+
+
+      /**
+      * @description Returns true if the type of the argument 'source' is a TS.TypeCode.RandomGUID object type,
+      *  otherwise false.
+      *
+      * @param {any} source
+      *
+      * @returns {boolean}
+      */
+      export function isRandomGUID(source: any): boolean
+      {
+        if (TS.Utils.Assert.isGUID(source))
+        {
+          return (source as TS.TypeCode.RandomGUID).version == TS.TypeCode.GUIDVersionEnum.RANDOM;
         }
 
         return false;
@@ -1097,6 +1234,28 @@
 
 
       /**
+      * @description Returns true if the type of the argument 'source' is a TS.TypeCode.TimeBasedGUID object type,
+      *  otherwise false.
+      *
+      * @param {any} source
+      *
+      * @returns {boolean}
+      */
+      export function isTimeBasedGUID(source: any): boolean
+      {
+        if (TS.Utils.Assert.isGUID(source))
+        {
+          if ((source as TS.TypeCode.TimeBasedGUID).version == TS.TypeCode.GUIDVersionEnum.TIME_BASED)
+          {
+            return TS.Utils.Assert.isInstanceOf(source, TS.TypeCode.TimeBasedGUID);
+          }
+        }
+
+        return false;
+      }
+
+
+      /**
       * @description Returns true if the value of the argument 'source' is an UInt64Number, otherwise false.
       *
       * @param {any} source
@@ -1154,7 +1313,7 @@
           return false;
         }//END if
 
-        if (!TS.Utils.Assert.isArray(source))
+        if (!(source instanceof Uint8Array) &&  !TS.Utils.Assert.isArray(source))
         {
           return false;
         }//END if
@@ -1243,8 +1402,9 @@
       *  normal enum behavior and is by design. See example.
       *
       * @example
+      * ```typescript
       *
-      *  enum testEnum = { ZERO, ONE, TWO };
+      *  enum testEnum { ZERO, ONE, TWO };
       *
       *  testEnum[2];     // "TWO"  -> 2 accepted as valid enum member
       *
@@ -1257,6 +1417,7 @@
       *  isValueOfEnum["ONE"]; // true   -> "ONE" accepted as valid enum member
       *
       *  isValueOfEnum["2"];   // false  -> "2" NOT accepted as valid enum member
+      *```
       *
       * @param {number | string} source
       * @param {Object} enumObj

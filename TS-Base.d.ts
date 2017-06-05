@@ -2,14 +2,14 @@ declare namespace TS {
     /**
     * @class TS.Exception
     *
+    * @implements {Error}
+    *
     * @description The base class of all exceptions defined in this framework. The Exception class has a public read only
     *  property called 'type' which returns the fully qualified type name of the exception class. This way you are able
     *  to create a finer granular error handling based on the exception type. Your are not longer forced to parse the
     *  error message string to infer the nature of the exception. Each subclass of the Exception class has to override
     *  the 'type' property to reflect the own type. The exception class has also a read only 'innerException' property
     *  which allows to create an exception stack which links back to the root exception.
-    *
-    * @implements {Error}
     */
     class Exception implements Error {
         /**
@@ -29,17 +29,17 @@ declare namespace TS {
         */
         readonly innerException: TS.Exception | null;
         /**
-        * @description The error message.
-        *
         * @implements {Error}
+        *
+        * @description The error message.
         *
         * @get {string} message
         */
         readonly message: string;
         /**
-        * @description The error name. It's the same as the type.
-        *
         * @implements {Error}
+        *
+        * @description The error name. It's the same as the type.
         *
         * @get {string} name
         */
@@ -55,8 +55,8 @@ declare namespace TS {
         /**
         * @constructor
         *
-        * @param {string} message?, An optional message string.
-        * @param {Exception} innerException?, An optional inner exception.
+        * @param {string} message, An optional message string.
+        * @param {Exception} innerException, An optional inner exception.
         */
         constructor(message?: string, innerException?: TS.Exception);
         /**
@@ -82,10 +82,10 @@ declare namespace TS {
     /**
     * @class TS.AmbiguousResultException
     *
+    * @extends {TS.Exception}
+    *
     * @description This exception signals a an error where an operation which is specified to deliver a single result
     *  fails because there are multiple possible results available.
-    *
-    * @extends {TS.Exception}
     */
     class AmbiguousResultException extends TS.Exception {
         /**
@@ -127,9 +127,9 @@ declare namespace TS {
     /**
     * @class TS.ArgumentException
     *
-    * @description This exceptions signals a general error caused by an invalid argument.
-    *
     * @extends {TS.Exception}
+    *
+    * @description This exceptions signals a general error caused by an invalid argument.
     */
     class ArgumentException extends TS.Exception {
         /**
@@ -171,9 +171,9 @@ declare namespace TS {
     /**
     * @class TS.ArgumentNullException
     *
-    * @description This exception signals an error caused by an unexpected null value in an argument.
-    *
     * @extends {TS.ArgumentException}
+    *
+    * @description This exception signals an error caused by an unexpected null value in an argument.
     */
     class ArgumentNullException extends TS.ArgumentException {
         /**
@@ -194,11 +194,11 @@ declare namespace TS {
     /**
     * @class TS.ArgumentNullOrUndefinedException
     *
+    * @extends {TS.ArgumentException}
+    *
     * @description This exceptions signals an error caused by an unexpected undefined or null value in an argument. The
     *  argument value of that exception will always be null and doesn't reflect the exact argument value which caused
     *  this exception.
-    *
-    * @extends {TS.ArgumentException}
     */
     class ArgumentNullOrUndefinedException extends TS.ArgumentException {
         /**
@@ -219,11 +219,11 @@ declare namespace TS {
     /**
     * @class TS.ArgumentNullUndefOrEmptyException
     *
+    * @extends {TS.ArgumentException}
+    *
     * @description This exception signals an error caused by an unexpected undefined or null value in an argument or
     *  an unexpected emptiness for an argument like an empty string or array. The argument value of that exception
     *  will always be null and doesn't reflect the exact argument value which caused this exception.
-    *
-    * @extends {TS.ArgumentException}
     */
     class ArgumentNullUndefOrEmptyException extends TS.ArgumentException {
         /**
@@ -244,10 +244,10 @@ declare namespace TS {
     /**
     * @class TS.ArgumentNullUndefOrWhiteSpaceException
     *
+    * @extends {TS.ArgumentException}
+    *
     * @description This exceptions signals an unexpected emptiness of a string. The argument value of that exception
     *  will always be null and doesn't reflect the exact argument value which caused this exception.
-    *
-    * @extends {TS.ArgumentException}
     */
     class ArgumentNullUndefOrWhiteSpaceException extends TS.ArgumentException {
         /**
@@ -268,9 +268,9 @@ declare namespace TS {
     /**
     * @class TS.ArgumentOutOfRangeException
     *
-    * @description This exceptions signals that an argument exceeded the range of allowed values.
-    *
     * @extends {TS.ArgumentException}
+    *
+    * @description This exceptions signals that an argument exceeded the range of allowed values.
     */
     class ArgumentOutOfRangeException extends TS.ArgumentException {
         /**
@@ -292,9 +292,9 @@ declare namespace TS {
     /**
     * @class TS.ArgumentUndefinedException
     *
-    * @description This exceptions signals an error caused by an unexpected undefined value in an argument.
-    *
     * @extends {TS.ArgumentException}
+    *
+    * @description This exceptions signals an error caused by an unexpected undefined value in an argument.
     */
     class ArgumentUndefinedException extends TS.ArgumentException {
         /**
@@ -315,15 +315,17 @@ declare namespace TS {
     /**
     * @class TS.IndexOutOfRangeException
     *
-    * @description This exceptions signals that an index value exceeded the range of indexable elements.
-    *
     * @extends {TS.Exception}
+    *
+    * @description This exceptions signals that an index value exceeded the range of indexable elements.
     */
     class IndexOutOfRangeException extends TS.Exception {
         /**
-        * @get {string} type
         * @public
+        *
         * @override {TS.Exception}
+        *
+        * @get {string} type
         */
         readonly type: string;
         /**
@@ -335,13 +337,13 @@ declare namespace TS {
         constructor(message?: string, innerException?: Exception);
     }
     /**
-    * @class TS.InvalidInvocationException
-    *
-    * @description This exceptions signals that a function was invoked in an unexpected or invalid way.
+    * @class TS.InvalidInvokationException
     *
     * @extends {TS.Exception}
+    *
+    * @description This exceptions signals that a function was invoked in an unexpected or invalid way.
     */
-    class InvalidInvocationException extends TS.Exception {
+    class InvalidInvokationException extends TS.Exception {
         /**
         * @override {TS.Exception}
         *
@@ -359,10 +361,10 @@ declare namespace TS {
     /**
     * @class TS.InvalidOperationException
     *
+    * @extends {TS.Exception}
+    *
     * @description This exceptions signals an attempt to start an operation which was not allowed to start in the current
     *  situation.
-    *
-    * @extends {TS.Exception}
     */
     class InvalidOperationException extends TS.Exception {
         /**
@@ -382,9 +384,9 @@ declare namespace TS {
     /**
     * @class TS.InvalidCastException
     *
-    * @description This exceptions signals that a casting operation failed.
-  
     * @extends {TS.Exception}
+    *
+    * @description This exceptions signals that a casting operation failed.
     */
     class InvalidCastException extends TS.Exception {
         /**
@@ -404,9 +406,9 @@ declare namespace TS {
     /**
     * @class TS.InvalidFormatException
     *
-    * @description This exceptions signals that an operation failed because of an invalid format of some data.
-    *
     * @extends {TS.Exception}
+    *
+    * @description This exceptions signals that an operation failed because of an invalid format of some data.
     */
     class InvalidFormatException extends TS.Exception {
         /**
@@ -448,9 +450,9 @@ declare namespace TS {
     /**
     * @class TS.InvalidTypeException
     *
-    * @description This exceptions signals that an argument has an invalid type.
-    *
     * @extends {TS.Exception}
+    *
+    * @description This exceptions signals that an argument has an invalid type.
     */
     class InvalidTypeException extends TS.Exception {
         /**
@@ -492,12 +494,12 @@ declare namespace TS {
     /**
     * @class TS.ArithmeticException
     *
+    * @extends {TS.Exception}
+    *
     * @description This exception signals an errors in an arithmetic, casting, or conversion operation.
     *  ArithmeticException is the base class for DivideByZeroException, NotFiniteNumberException, and OverflowException.
     *  Use one of the derived classes of ArithmeticException if appropriate to the exact nature of the error.
     *  Throw an ArithmeticException if there is no appropriate subclass to describe the nature of the error.
-    *
-    * @extends {TS.Exception}
     */
     class ArithmeticException extends TS.Exception {
         /**
@@ -517,9 +519,9 @@ declare namespace TS {
     /**
     * @class TS.OverflowException
     *
-    * @description This exception signals that an arithmetic, casting, or conversion operation results in an overflow.
-    *
     * @extends {TS.ArithmeticException}
+    *
+    * @description This exception signals that an arithmetic, casting, or conversion operation results in an overflow.
     */
     class OverflowException extends ArithmeticException {
         /**
@@ -539,9 +541,9 @@ declare namespace TS {
     /**
     * @class TS.DividedByZeroException
     *
-    * @description This exception signals an attempt to divide a number value by zero.
-    *
     * @extends {TS.ArithmeticException}
+    *
+    * @description This exception signals an attempt to divide a number value by zero.
     */
     class DividedByZeroException extends ArithmeticException {
         /**
@@ -561,10 +563,10 @@ declare namespace TS {
     /**
     * @class TS.NotFiniteNumberException
     *
+    * @extends {TS.ArithmeticException}
+    *
     * @description This exception signals an attempt to execute an arithmetic operation with a number value which is
     *  either infinite or Not-a-Number (NaN).
-    *
-    * @extends {TS.ArithmeticException}
     */
     class NotFiniteNumberException extends ArithmeticException {
         /**
@@ -584,9 +586,9 @@ declare namespace TS {
     /**
     * @class TS.NotImplementedException
     *
-    * @description This exception signals that a function or class is not or not fully implemented and can't be used.
-    *
     * @extends {TS.Exception}
+    *
+    * @description This exception signals that a function or class is not or not fully implemented and can't be used.
     */
     class NotImplementedException extends TS.Exception {
         /**
@@ -606,9 +608,9 @@ declare namespace TS {
     /**
     * @class TS.DeprecatedException
     *
-    * @description This exception signals that a function or class should not longer be used.
-    *
     * @extends {TS.Exception}
+    *
+    * @description This exception signals that a function or class should not longer be used.
     */
     class DeprecatedException extends TS.Exception {
         /**
@@ -628,9 +630,9 @@ declare namespace TS {
     /**
     * @class TS.DirectoryNotFoundException
     *
-    * @description This exception signals if the file system is not able to locate the requested directory.
-    *
     * @extends {TS.Exception}
+    *
+    * @description This exception signals if the file system is not able to locate the requested directory.
     */
     class DirectoryNotFoundException extends TS.Exception {
         /**
@@ -672,9 +674,9 @@ declare namespace TS {
     /**
     * @class TS.BufferOverrunException
     *
-    * @description This exception signals if the file system is not able to locate the requested directory.
-    *
     * @extends {TS.Exception}
+    *
+    * @description This exception signals if the file system is not able to locate the requested directory.
     */
     class BufferOverrunException extends TS.Exception {
         /**
@@ -694,11 +696,11 @@ declare namespace TS {
     /**
     * @class TS.EnvironmentNotSupportedException
     *
+    * @extends {TS.Exception}
+    *
     * @description This exception that some operation failed because the current environment is not supported. That may
     *  be the reason if a JavaScript VM lacks some functions, a Node.js script is running in a browser or vice versa or
     *  the operation system is not supported.
-    *
-    * @extends {TS.Exception}
     */
     class EnvironmentNotSupportedException extends TS.Exception {
         /**
@@ -718,9 +720,9 @@ declare namespace TS {
     /**
     * @class TS.TimeoutException
     *
-    * @description This exception if thrown if a function or operation doesn't response in a timely manner.
-    *
     * @extends {TS.Exception}
+    *
+    * @description This exception if thrown if a function or operation doesn't response in a timely manner.
     */
     class TimeoutException extends TS.Exception {
         /**
@@ -740,7 +742,7 @@ declare namespace TS {
 }
 declare namespace TS {
     /**
-     * @description The module 'Utils' hosts a collection of functions which offer solutions for common problems or
+     * @description The module 'Utils' combines some functions which offer solutions for common problems or
      *  reoccurring tasks which are not class specific. Since they are not class specific, they are also not part of a
      *  class. They are simply collected in this file and are part of the namespace. You can consider all of this
      *  functions as static if you like, because you can call them without a prior instantiation of an object.
@@ -750,14 +752,86 @@ declare namespace TS {
         * @interface ICurrency
         */
         interface ICurrency {
+            /** The name of the currency */
             Name: string;
+            /** The international three character currency code */
             Code: string;
+            /** The currency symbol if available */
             Symbol: string;
         }
         /**
-         * @description An array of currencies as defined in ISO 4217
+        * @enum NodeTypeEnum,
+        *
+        * @description This enum is nothing more than a shorthand reference to the node types as defined in
+        *  Node.prototype. See also the description at MDN.
+        *
+        * @see {@link https://developer.mozilla.org/en/docs/Web/API/Node/nodeType | MDN}
+        */
+        enum NodeTypeEnum {
+            /**
+            * @description An Element node such as &lt;p&gt; or &lt;div&gt;
+            */
+            ELEMENT_NODE,
+            /**
+            * @description The actual Text of Element or Attr
+            */
+            TEXT_NODE,
+            /**
+            * @description A ProcessingInstruction of an XML document such as <?xml-stylesheet ... ?> declaration
+            */
+            PROCESSING_INSTRUCTION_NODE,
+            /**
+            * @description A Comment node
+            */
+            COMMENT_NODE,
+            /**
+            * @description A Document node
+            */
+            DOCUMENT_NODE,
+            /**
+            * @description A DocumentType node e.g. <!DOCTYPE html> for HTML5 documents
+            */
+            DOCUMENT_TYPE_NODE,
+            /**
+            * @description A DocumentFragment node
+            */
+            DOCUMENT_FRAGMENT_NODE,
+            /**
+            * @description An Attribute of an Element.
+            *
+            * @deprecated The element attributes are no longer implementing the Node interface in DOM4 specification
+            */
+            ATTRIBUTE_NODE,
+            /**
+            * @description A CDATASection.
+            *
+            * @deprecated Removed in DOM4 specification
+            */
+            CDATA_SECTION_NODE,
+            /**
+            * @description An XML Entity Reference node.
+            *
+            * @deprecated Removed in DOM4 specification
+            */
+            ENTITY_REFERENCE_NODE,
+            /**
+            * @description An XML <!ENTITY ...> node.
+            *
+            * @deprecated Removed in DOM4 specification
+            */
+            ENTITY_NODE,
+            /**
+            * @description An XML <!NOTATION ...> node.
+            *
+            * @deprecated Removed in DOM4 specification
+            */
+            NOTATION_NODE,
+        }
+        /**
+         * @description An array of TS.Utils.ICurrency objects, as defined in ISO 4217
          *
          * @see {@link http://www.iso.org/iso/home/standards/currency_codes.htm | ISO}
+         * @see {TS.Utils.ICurrency}
          */
         const currencyArray: Array<ICurrency>;
         /**
@@ -793,13 +867,25 @@ declare namespace TS {
         * @throws {TS.ArgumentNullOrUndefinedException}
         * @throws {TS.InvalidTypeException }
         */
-        function byteArrayToBitString(unsignedByteArray: Array<number>): string;
+        function byteArrayToBitString(unsignedByteArray: Array<number> | Uint8Array): string;
+        /**
+        * @description Converts an array of unsigned byte values into a hexadecimal string representation.The function
+        *  throws an exception if the value in argument 'unsignedByteArray' is not a valid byte array or empty.
+        *
+        * @param {Array<number> | Uint8Array} byteArray, An array of unsigned byte values.
+        *
+        * @returns {number}, The result value as unsigned integer.
+        *
+        * @throws {TS.ArgumentNullOrUndefinedException}
+        * @throws {TS.InvalidTypeException }
+        */
+        function byteArrayToHexString(unsignedByteArray: Array<number> | Uint8Array): string;
         /**
         * @description Converts an array of unsigned byte values into an unsigned integer value. The function throws an
         *  exception if the value in argument 'unsignedByteArray' is not a valid byte array or empty. The function throws
         *  a 'TS.ArgumentOutOfRangeException' if the conversion exceeds the maximum number range. (Number.MAX_SAFE_INTEGER)
         *
-        * @params {Array<number>} byteArray, An array of unsigned byte values.
+        * @param {Array<number> | Uint8Array} byteArray, An array of unsigned byte values.
         *
         * @returns {number}, The result value as unsigned integer.
         *
@@ -807,7 +893,7 @@ declare namespace TS {
         * @throws {TS.InvalidTypeException }
         * @throws {TS.ArgumentOutOfRangeException}
         */
-        function byteArrayToUInt(unsignedByteArray: Array<number>): number;
+        function byteArrayToUInt(unsignedByteArray: Array<number> | Uint8Array): number;
         /**
         * @description Converts the value given in argument 'unsignedByteValue' into an 8 character bit string. The result
         *  string will be padded with leading '0' characters if necessary until the length of 8 characters is reached.
@@ -820,6 +906,17 @@ declare namespace TS {
         * @throws {TS.InvalidTypeException}
         */
         function byteToBitString(unsignedByteValue: number): string;
+        /**
+        * @description Checks the number of arguments available in the provided parameter 'args' and throws a
+        *  'TS.InvalidInvokationException' if the number of arguments is not in the range of [minNumber..maxNumber].
+        *
+        * @param {IArguments} args
+        * @param {number} minNumber
+        * @param {number} maxNumber
+        *
+        * @throws {TS.InvalidInvokationException}
+        */
+        function checkArgumentsLength(args: IArguments, minNumber: number, maxNumber: number, functionName: string): void;
         /**
         * @description Checks the value of argument 'parameter' against null and undefined and throws a
         *  'TS.ArgumentNullOrUndefinedException' if the argument is either null or undefined.
@@ -996,7 +1093,7 @@ declare namespace TS {
         /**
         * @description Checks the value of argument 'parameter' against null and undefined and throws a
         *  'TS.ArgumentNullOrUndefinedException' if the argument is either null or undefined.
-        *  Checks whether the value of argument 'type' is a valid type. Throws a 'TS.InvalidInvocationException' if not.
+        *  Checks whether the value of argument 'type' is a valid type. Throws a 'TS.InvalidInvokationException' if not.
         *  Checks whether the value of argument 'parameter' is an instance of the type provide in argument 'type'.
         *  Throws a 'TS.InvalidTypeException' if not.
         *  The exception messages use the 'parameterName' and 'functionName' in its message to signal which parameter
@@ -1008,7 +1105,7 @@ declare namespace TS {
         * @param {string} functionName
         *
         * @throws {TS.ArgumentNullOrUndefinedException}
-        * @throws {TS.InvalidInvocationException}
+        * @throws {TS.InvalidInvokationException}
         * @throws {TS.InvalidTypeException}
         */
         function checkInstanceOfParameter(parameterName: string, parameter: any, type: Object, functionName: string): void;
@@ -1209,6 +1306,9 @@ declare namespace TS {
         function compactArray(sparseArray: Array<any>, allowNull?: boolean): Array<any>;
         /**
         * @description Creates a version 4 random GUID which is returned as string in a canonical representation.
+        *  'xxxxxxxx-xxxx-Mxxx-Nxxx-xxxxxxxxxxxx' is an example for that string. All x are hexadecimal values in
+        *  the range of [0..f]. M is the version number of the GUID as hexadecimal value. N is the variant number
+        *  encoded in the first two bit of the hexadecimal value at the given position.
         *
         * @see {@link http://en.wikipedia.org/wiki/Universally_unique_identifier#Version_4_.28random.29 | Wikipedia }
         * @see {@link http://www.ietf.org/rfc/rfc4122.txt | IETF }
@@ -1246,8 +1346,9 @@ declare namespace TS {
          *  number strings to numbers. That differs from the normal enum behavior and is by design. See example
          *
          * @example
+         *```typescript
          *
-         *  enum testEnum = { ZERO, ONE, TWO };
+         *  enum testEnum { ZERO, ONE, TWO };
          *
          *  testEnum[2];     // "TWO"
          *
@@ -1260,6 +1361,7 @@ declare namespace TS {
          *  getValueFromEnum["ONE"]; // 1
          *
          *  getValueFromEnum["2"];   // undefined
+         *```
          *
          * @param {string | number} key
          * @param {any} enumObj
@@ -1267,6 +1369,7 @@ declare namespace TS {
          * @returns {string | number | undefined}
          */
         function getValueFromEnum(key: string | number, enumObj: any): any;
+        function hasProperty(source: Object, key: string): boolean;
         /**
         * @description Returns an array of unsigned 8 bit values which represent the hexadecimal string provided in
         *  argument 'hexString'. The function operates on character pairs to calculate the result values. That means
@@ -1354,6 +1457,22 @@ declare namespace TS {
         */
         function removeUTF8BOM(text: string): string;
         /**
+        * @description Replaces all occurrences of 'searchPattern' by 'replacePattern' in the source string and returns
+        *  the resulting string.
+        *
+        * @param {string} source
+        * @param {string} searchPattern
+        * @param {string} replaceString
+        *
+        * @returns {string}
+        *
+        * @throws {TS.ArgumentNullOrUndefinedException}
+        * @throws {TS.ArgumentNullUndefOrWhiteSpaceException}
+        * @throws {TS.InvalidTypeException}
+        * @throws {TS.InvalidInvokationException}
+        */
+        function replaceAll(source: string, searchPattern: string, replaceString: string): string;
+        /**
         * @description Returns a string representation in hexadecimal notation of the unsigned 8 bit value provided in
         *  argument 'value'. The returned string has a fixed length of 2 characters. Number values below 16 are padded with
         *  a leading '0' character.
@@ -1379,6 +1498,34 @@ declare namespace TS {
         * @throws {TS.ArgumentOutOfRangeException}
         */
         function UInt32SwapSignificantByteOrder(value: number): number;
+        /**
+        * @description Converts the unsigned 16 bit integer number in argument 'value' into an array of 2 byte values and
+        *  returns that array. The array will be padded with leading 0 byte values for lower numbers until the length of 2
+        *  byte values is reached.
+        *
+        * @param {number} value
+        *
+        * @returns {Array<number>}, An array of 2 byte values.
+        *
+        * @throws {TS.ArgumentNullOrUndefinedException}
+        * @throws {TS.InvalidTypeException}
+        * @throws {TS.ArgumentOutOfRangeException}
+        */
+        function UInt16To2ByteArray(value: number): Array<number>;
+        /**
+        * @description Returns a string representation in hexadecimal notation of the unsigned 16 bit integer value
+        *  provided in argument 'value'. The returned string has a fixed length of 4 characters. The returned string will
+        *  be padded with as much leading '0' as necessary to reach the length of 4 characters.
+        *
+        * @param {number}, value
+        *
+        * @returns {string}, A string of 4 characters representing the UInt16 value.
+        *
+        * @throws {TS.ArgumentNullOrUndefinedException}
+        * @throws {TS.InvalidTypeException}
+        * @throws {TS.ArgumentOutOfRangeException}
+        */
+        function UInt16ToHexString(value: number): string;
         /**
         * @description Converts the unsigned 32 bit integer number in argument 'value' into an array of 4 byte values and
         *  returns that array. The array will be padded with leading 0 byte values for lower numbers until the length of 4
@@ -1425,7 +1572,7 @@ declare namespace TS {
     namespace Utils {
         /**
         * @description A collection of assertion functions. Those are functions which take on argument and return a
-        *  boolean value. The boolean value describes whether the argument satisfies a specific condition or not.
+        *  boolean value. The boolean value describes whether the argument satisfies a specific condition.
         */
         namespace Assert {
             /**
@@ -1519,6 +1666,15 @@ declare namespace TS {
             */
             function isByteValue(source: any): boolean;
             /**
+            * @description Returns true if the type of the argument 'source' is a string which qualifies as canonical GUID
+            *  string, otherwise false;
+            *
+            * @param {any} source
+            *
+            * @returns {boolean}
+            */
+            function isCanonicalGUIDString(source: any): boolean;
+            /**
             * @description Returns true if the type of the argument 'source' is considered a valid constructor function which
             *  creates a none empty object, otherwise false.
             *  An empty object is one which can be created using an object literal like '{}' or calling the Object
@@ -1598,6 +1754,14 @@ declare namespace TS {
             */
             function isGenerator(source: any): boolean;
             /**
+            * @description Returns true if the type of the argument 'source' is a TS.TypeCode.GUID object type, otherwise false.
+            *
+            * @param {any} source
+            *
+            * @returns {boolean}
+            */
+            function isGUID(source: any): boolean;
+            /**
             * @description Returns true if the type of the argument 'source' is a none empty hexadecimal string. If the
             *  string contains other characters than [0-9, A-F, a-f], even white space, the return value will be false.
             *
@@ -1643,6 +1807,19 @@ declare namespace TS {
             * @returns {boolean}
             */
             function isIntegerNumber(source: any): boolean;
+            /**
+            * @description Returns true if the value of the argument 'source' is a string which matches one of the following
+            *  formats:
+            *  - '01:23:45:67:89:AB'
+            *  - '01-23-45-67-89-AB'
+            *  The test is not case sensitive. You might use upper case or lower case hex characters.
+            *
+            * @see {@link https://standards.ieee.org/develop/regauth/tut/eui48.pdf | IEEE}
+            * @param {any} source
+            *
+            * @returns {boolean}
+            */
+            function isMACAddressString(source: any): boolean;
             /**
             * @description Returns true if the value of the argument 'source' is an iterable value, otherwise false.
             *
@@ -1730,6 +1907,7 @@ declare namespace TS {
             * @see TS.Utils.Assert.isNumberValue
             *
             * @param {any} source
+            *
             * @returns {boolean}
             */
             function isNumberObject(source: any): boolean;
@@ -1754,10 +1932,11 @@ declare namespace TS {
             function isObject(source: any): boolean;
             /**
             * @description Returns true if the type of argument 'source' is a plain object otherwise false. A plain object is
-            *  an object without a prototype. It is either a literal object or an object created with 'Object.create'
+            *  an object without a prototype. It is either a literal object or an object created with the 'Object.create'
             *  function called with a null argument.
             *
             * @example
+            * ```typescript
             *
             * function Foo() {
             *   this.a = 1;
@@ -1770,6 +1949,7 @@ declare namespace TS {
             * isPlainObject({ 'x': 0, 'y': 0 }) => true
             *
             * isPlainObject(Object.create(null)) => true
+            *```
             *
             * @param {any} source
             *
@@ -1784,6 +1964,7 @@ declare namespace TS {
             * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures | JavaScript data types and data structures}
             *
             * @example
+            * ```typescript
             *
             * isPrimitiveType(true) => true
             *
@@ -1806,12 +1987,22 @@ declare namespace TS {
             * isPrimitiveType(new Number(13)) => false
             *
             * isPrimitiveType(new String("two")) => false
+            *```
             *
             * @param {any} source
             *
             * @returns {boolean}
             */
             function isPrimitiveType(source: any): boolean;
+            /**
+            * @description Returns true if the type of the argument 'source' is a TS.TypeCode.RandomGUID object type,
+            *  otherwise false.
+            *
+            * @param {any} source
+            *
+            * @returns {boolean}
+            */
+            function isRandomGUID(source: any): boolean;
             /**
             * @description  Returns true if the type of the argument 'source' is a regular expression type, otherwise false.
             *
@@ -1872,6 +2063,15 @@ declare namespace TS {
             * @returns {boolean}
             */
             function isSymbol(source: any): boolean;
+            /**
+            * @description Returns true if the type of the argument 'source' is a TS.TypeCode.TimeBasedGUID object type,
+            *  otherwise false.
+            *
+            * @param {any} source
+            *
+            * @returns {boolean}
+            */
+            function isTimeBasedGUID(source: any): boolean;
             /**
             * @description Returns true if the value of the argument 'source' is an UInt64Number, otherwise false.
             *
@@ -1939,8 +2139,9 @@ declare namespace TS {
             *  normal enum behavior and is by design. See example.
             *
             * @example
+            * ```typescript
             *
-            *  enum testEnum = { ZERO, ONE, TWO };
+            *  enum testEnum { ZERO, ONE, TWO };
             *
             *  testEnum[2];     // "TWO"  -> 2 accepted as valid enum member
             *
@@ -1953,6 +2154,7 @@ declare namespace TS {
             *  isValueOfEnum["ONE"]; // true   -> "ONE" accepted as valid enum member
             *
             *  isValueOfEnum["2"];   // false  -> "2" NOT accepted as valid enum member
+            *```
             *
             * @param {number | string} source
             * @param {Object} enumObj
@@ -1964,7 +2166,195 @@ declare namespace TS {
     }
 }
 declare namespace TS {
-    module TypeCode {
+    namespace Utils {
+        /**
+        * @description A collection of type guard functions.
+        * @see {@link https://www.typescriptlang.org/docs/handbook/advanced-types.html | typescriptlang.org}
+        * @see {@link https://basarat.gitbooks.io/typescript/docs/types/typeGuard.html | basarat.gitbooks.io/typescript}
+        */
+        namespace TypeGuards {
+            /**
+            * @description Array type guard. Returns true if the value of argument 'source' is an array.
+            *
+            * @param {any} source
+            *
+            * @returns {boolean}
+            */
+            function isArray(source: any): source is Array<any>;
+            /**
+            * @description Boolean type guard. Returns true if the value of argument 'source' is a boolean.
+            *
+            * @param {any} source
+            *
+            * @returns {boolean}
+            */
+            function isBoolean(source: any): source is boolean;
+            /**
+            * @description Date type guard. Returns true if the value of argument 'source' is a date object.
+            *
+            * @param {any} source
+            *
+            * @returns {boolean}
+            */
+            function isDate(source: any): source is Date;
+            /**
+            * @description GUID type guard. Returns true if the value of argument 'source' is a 'TS.TypeCode.GUID' object.
+            *
+            * @param {any} source
+            *
+            * @returns {boolean}
+            */
+            function isGUID(source: any): source is TS.TypeCode.GUID;
+            /**
+            * @description RandomGUID type guard. Returns true if the value of argument 'source' is a 'TS.TypeCode.RandomGUID' object.
+            *
+            * @param {any} source
+            *
+            * @returns {boolean}
+            */
+            function isRandomGUID(source: any): source is TS.TypeCode.RandomGUID;
+            /**
+            * @description TimeBasedGUID type guard. Returns true if the value of argument 'source' is a 'TS.TypeCode.TimeBasedGUID' object.
+            *
+            * @param {any} source
+            *
+            * @returns {boolean}
+            */
+            function isTimeBasedGUID(source: any): source is TS.TypeCode.TimeBasedGUID;
+            /**
+            * @description Null type guard. Returns true if the value of argument 'source' is null.
+            *
+            * @param {any} source
+            *
+            * @returns {boolean}
+            */
+            function isNull(source: any): source is null;
+            /**
+            * @description Number type guard. Returns true if the value of argument 'source' is a number.
+            *
+            * @param {any} source
+            *
+            * @returns {boolean}
+            */
+            function isNumber(source: any): source is number;
+            /**
+            * @description Object type guard. Returns true if the value of argument 'source' is an object.
+            *
+            * @param {any} source
+            *
+            * @returns {boolean}
+            */
+            function isObject(source: any): source is Object;
+            /**
+            * @description RegEx type guard. Returns true if the value of argument 'source' is a regular expression object.
+            *
+            * @param {any} source
+            *
+            * @returns {boolean}
+            */
+            function isRegEx(source: any): source is RegExp;
+            /**
+            * @description String type guard. Returns true if the value of argument 'source' is a string.
+            *
+            * @param {any} source
+            *
+            * @returns {boolean}
+            */
+            function isString(source: any): source is string;
+            /**
+            * @description Symbol type guard. Returns true if the value of argument 'source' is a symbol object.
+            *
+            * @param {any} source
+            *
+            * @returns {boolean}
+            */
+            function isSymbol(source: any): source is Symbol;
+            /**
+            * @description Undefined type guard. Returns true if the value of argument 'source' is undefined.
+            *
+            * @param {any} source
+            *
+            * @returns {boolean}
+            */
+            function isUndefined(source: any): source is undefined;
+        }
+    }
+}
+declare namespace TS {
+    namespace Utils {
+        /**
+        * @description An enumeration of HTTP status codes as defined in RFC 7231 in paragraph 6: 'Response Status Codes'
+        *  and some additional status codes usually used in WEB DAV communication.
+        *
+        * @see {@link https://tools.ietf.org/html/rfc7231 | RFC 7231}
+        */
+        enum HTTPStatusCodes {
+            CONTINUE = 100,
+            SWITCHING_PROTOCOLS = 101,
+            PROCESSING = 102,
+            OK = 200,
+            CREATED = 201,
+            ACCEPTED = 202,
+            NON_AUTHORATIVE_INFORMATION = 203,
+            NO_CONTENT = 204,
+            RESET_CONTENT = 205,
+            PARTIAL_CONTENT = 206,
+            MULTI_STATUS = 207,
+            ALREADY_REPORTED = 208,
+            IM_USED = 226,
+            MULTIPLE_CHOICES = 300,
+            MOVED_PERMANENTLY = 301,
+            FOUND = 302,
+            SEE_OTHER = 303,
+            NOT_MODIFIED = 304,
+            USE_PROXY = 305,
+            SWITCH_PROXY = 306,
+            TEMPORARY_REDIRECT = 307,
+            PERMANENT_REDIRECT = 308,
+            BAD_REQUEST = 400,
+            UNAUTHORIZED = 401,
+            PAYMENT_REQUIRED = 402,
+            FORBIDDEN = 403,
+            NOT_FOUND = 404,
+            METHOD_NOT_ALLOWED = 405,
+            NOT_ACCEPTABLE = 406,
+            PROXY_AUTHENTICATION_REQUIRED = 407,
+            REQUEST_TIME_OUT = 408,
+            CONFLICT = 409,
+            GONE = 410,
+            LENGTH_REQUIRED = 411,
+            PRECONDITION_FAILED = 412,
+            PAYLOAD_TOO_LARGE = 413,
+            URI_TOO_LONG = 414,
+            UNSUPPORTED_MEDIA_TYPE = 415,
+            RANGE_NOT_SATISFIABLE = 416,
+            EXPECTATION_FAILED = 417,
+            IM_A_TEAPOT = 418,
+            MISDIRECTED_REQUEST = 421,
+            UNPROCESSABLE_ENTITY = 422,
+            LOCKED = 423,
+            FAILED_DEPENDENCY = 424,
+            UPGRADE_REQUIRED = 426,
+            PRECONDITION_REQUIRED = 428,
+            TOO_MANY_REQUEST = 429,
+            REQUEST_HEADER_FIELDS_TOO_LARGE = 431,
+            UNAVAILABLE_FOR_LEGAL_REASONS = 451,
+            INTERNAL_SERVER_ERROR = 500,
+            NOT_IMPLEMENTED = 501,
+            BAD_GATEWAY = 502,
+            SERVICE_UNAVAILABLE = 503,
+            GATEWAY_TIME_OUT = 504,
+            HTTP_VERSION_NOT_SUPPORTED = 505,
+            VARIANT_ALSO_NEGOTIATES = 506,
+            INSUFFICIENT_STORAGE = 507,
+            LOOP_DETECTED = 508,
+            NOT_EXTENDED = 510,
+            NETWORK_AUTHENTICATION_REQUIRED = 511,
+        }
+    }
+}
+declare namespace TS {
+    namespace TypeCode {
         /**
         * @class TS.TypeCode.UInt64
         *
@@ -2169,6 +2559,402 @@ declare namespace TS {
     }
 }
 declare namespace TS {
+    namespace TypeCode {
+        /**
+        * @description Enumeration of the GUID versions
+        *
+        * @see {@link https://www.ietf.org/rfc/rfc4122.txt | rfc4122, paragraph 4.1.3. Version}
+        */
+        enum GUIDVersionEnum {
+            /** Flag which tells that an unknown version number was detected or a zero GUID*/
+            UNKNOWN = 0,
+            /** Time-based version */
+            TIME_BASED = 1,
+            /** DCE Security version, with embedded POSIX UIDs */
+            DCE = 2,
+            /** Name-based version using MD5 hashing */
+            NAME_BASED_MD5 = 3,
+            /** Randomly or pseudo-randomly generated version */
+            RANDOM = 4,
+            /** Name-based version using SHA-1 hashing */
+            NAME_BASED_SHA1 = 5,
+        }
+        /**
+        * @description Enumeration of the GUID variants
+        *
+        * @see {@link https://www.ietf.org/rfc/rfc4122.txt | rfc4122, paragraph 4.1.1. Variant}
+        */
+        enum GUIDVariantEnum {
+            /** Flag which tells that an unknown variant number was detected or a zero GUID*/
+            UNKNOWN = 0,
+            /** Reserved, NCS backward compatibility */
+            RESERVED_NCS = 1,
+            /** The variant used by the GUIDs in this namespace (except for the zero GUID)*/
+            RFC4122 = 2,
+            /** Reserved, Microsoft Corporation backward compatibility */
+            RESERVED_MS = 3,
+            /** Reserved for future definition */
+            RESERVED_FUTURE_DEF = 4,
+        }
+        /**
+        * @class TS.TypeCode.TimeFields
+        *
+        * @description This class represents the time fields of a version 1 / time-based GUID as described in the rfc4122.
+        *  The time fields are named 'time_low', 'time_mid' and 'time_hi_and_version' in that    and are a segments of
+        *  a 60 bit clock counter. The clock counter started counting on '1582-10-25T00:00:00.000' and has a
+        *  100 nanosecond resolution.
+        *  The JavaScript clock has only a millisecond resolution. In order to compensate the lower clock resolution, a
+        *  GUIDCounter is used. That GUIDCounter should be reset to zero on every passed millisecond and should be increased
+        *  by one for every new created time-based GUID in the current millisecond.
+        *  That means, that there is a maximum of 9999 distinguished time-based GUIDs possible per millisecond.
+        *
+        * @see {@link https://www.ietf.org/rfc/rfc4122.txt | rfc4122}
+        */
+        class TimeFields {
+            /**
+            * @description The offset from the rfc4122 defined clock which started at '1582-10-25T00:00:00.000Z' to the
+            *  JavaScript clock which started at '1970-01-01T00:00:00.000Z', in milliseconds.
+            *
+            * @const {number} rfc4122ClockOffset
+            */
+            static rfc4122ClockOffset: number;
+            private internalHighField;
+            private internalMidField;
+            private internalLowField;
+            private internalGUIDCount;
+            private inernalMilliSeconds;
+            /**
+            * @description Returns the current time fields as string which is formated in the way described in the rfc4122.
+            *  The returned string will look like this "xxxxxxxx-xxxx-xxxx". The first segment will be the lowField, the
+            *  second the midField and the third the highFiled with the encoded version number.
+            *
+            * @get {string}
+            */
+            readonly asString: string;
+            /**
+            * @description Returns the highField as Uint8 byte array.
+            *
+            * @get {Uint8Array}
+            */
+            readonly highField: Uint8Array;
+            /**
+            * @description Returns the midField as Uint8 byte array.
+            *
+            * @get {Uint8Array}
+            */
+            readonly midField: Uint8Array;
+            /**
+            * @description Returns the lowField as Uint8 byte array.
+            *
+            * @get {Uint8Array}
+            */
+            readonly lowField: Uint8Array;
+            /**
+            * @description Returns the GUIDCounter.
+            *
+            * @get {number}
+            */
+            readonly GUIDCounter: number;
+            /**
+            * @description Returns the value of this TimeFields object as milliseconds passed since '1582-10-25T00:00:00.000Z'.
+            *
+            * @see TS.TypeCode.TimeFields.rfc4122ClockOffset
+            *
+            * @get {number}
+            */
+            readonly UTCMilliSeconds: number;
+            /**
+            * @constructor
+            *
+            * @description Creates a new TimeFields object based on the current time and value of the 'lastTimeFields'
+            *  argument. If the new created TimeFiels object represents the same millisecond as the 'lastTimeFields'
+            *  object, the new created TimeFields object will have a GUIDCounter which is the GUIDCounter value of
+            *  the 'lastTimeFields' object increased by one.
+            *
+            *  newTimeFields.GUIDCounter = lastTimeFields.GUIDCounter + 1
+            *
+            *  If the new crated TimeFiels object does not represents the same millisecond as the 'lastTimeFields'
+            *  object, the GUIDCounter will be zero.
+            *
+            * @param {number} GUIDCounter, An integer number in the range of [0..9999].
+            *
+            * @throws {TS.ArgumentOutOfRangeException}
+            * @throws {TS.InvalidInvokationException}
+            * @throws {TS.InvalidTypeException}
+            */
+            constructor(lastTimeFields: TS.TypeCode.TimeFields);
+            /**
+            * @constructor
+            *
+            * @description Creates a new TimeFields object from the first three blocks of a canonical GUID representation
+            *  of a time-based GUID. The primary purpose of this constructor is to simplify the task to decode the
+            *  time stamp of a time-based GUID.
+            *
+            * @param {string} canonicalGUIDString, A canonical GUID string which is used to create the TimeFields object.
+            *
+            * @throws {TS.ArgumentOutOfRangeException}
+            * @throws {TS.InvalidInvokationException}
+            * @throws {TS.InvalidTypeException}
+            */
+            constructor(canonicalGUIDString: string);
+            /**
+            * @constructor
+            *
+            * @description Creates a new TimeFields object based on the current time. The GUIDCounter will be set to zero.
+            *
+            * @throws {TS.InvalidInvokationException}
+            */
+            constructor();
+        }
+        /**
+        * @interface TS.TypeCode.IGUID
+        *
+        * @description The interface which all GUID classes in this namespace have to implement..
+        */
+        interface IGUID {
+            /** Returns the canonical string representation of the current GUID. */
+            readonly canonicalString: string;
+            /** Returns the version of the current GUID */
+            readonly version: GUIDVersionEnum;
+            /** Returns the variant of the current GUID */
+            readonly variant: GUIDVariantEnum;
+        }
+        /**
+        * @class TS.TypeCode.GUID
+        *
+        * @implements {TS.TypeCode.IGUID}
+        *
+        * @description This class implements the TS.TypeCode.IGUID interface. Its the base class of all GUID classes defined
+        *  in this namespace.
+        */
+        class GUID implements IGUID {
+            protected readonly internalCanonicalString: string;
+            /**
+            * @implements {TS.TypeCode.IGUID}
+            *
+            * @description Returns the canonical string representation of the GUID.
+            *
+            * @get {string}
+            */
+            readonly canonicalString: string;
+            /**
+            * @implements {TS.TypeCode.IGUID}
+            *
+            * @description Returns the version of the GUID.
+            *
+            * @get {TS.TypeCode.GUIDVersionEnum}
+            */
+            readonly version: TS.TypeCode.GUIDVersionEnum;
+            /**
+            * @implements {TS.TypeCode.IGUID}
+            *
+            * @description Returns the variant number of the GUID.
+            *
+            * @get {TS.TypeCode.GUIDVariantEnum}
+            */
+            readonly variant: TS.TypeCode.GUIDVariantEnum;
+            /**
+            * @constructor
+            *
+            * @description Creates a new GUID from the canonical string representation of a GUID provided in argument
+            *  'canonicalString'. Creates a zero GUID if called without an argument. The constructor throws an exception
+            *  if the provided argument is invalid.
+            *
+            * @param {string} canonicalString
+            *
+            * @throws {TS.ArgumentNullOrUndefinedException}
+            * @throws {TS.ArgumentNullUndefOrWhiteSpaceException}
+            * @throws {TS.InvalidTypeException}
+            * @throws {TS.InvalidFormatException}
+            */
+            constructor(canonicalGUIDString?: string);
+            protected static getVersion(canonicalGUIDString: string): TS.TypeCode.GUIDVersionEnum;
+            protected static getVariant(canonicalGUIDString: string): TS.TypeCode.GUIDVariantEnum;
+        }
+        /**
+        * @class TS.TypeCode.RandomGUID
+        *
+        * @extends {TS.TypeCode.GUID}
+        *
+        * @description This class represents a random version 4 GUID as described by the IETF in document rfc4122.txt.
+        *
+        * @see {@link http://www.ietf.org/rfc/rfc4122.txt | IETF }
+        */
+        class RandomGUID extends GUID {
+            constructor();
+        }
+        /**
+        * @class TS.TypeCode.TimeBasedGUID
+        *
+        * @extends {TS.TypeCode.GUID}
+        *
+        * @description This class represents a Time-Based version 1 GUID as described by the IETF in document
+        *  rfc4122.txt.
+        *
+        * @see {@link http://www.ietf.org/rfc/rfc4122.txt | IETF }
+        */
+        class TimeBasedGUID extends GUID {
+            /**
+            * @description Returns the MAC address of the current time-based GUID as a string in colon format. The string
+            *  would look similar to this: 'af:5f:98:01:d2:c0'.
+            *
+            * @get {string}
+            */
+            readonly MACAddress: string;
+            /**
+            * @description Returns the GUID counter of the current time-based GUID. The GUID counter at which position in the
+            *  millisecond represented by this GUID the GUID was created. There is a maximum of 9999 possible time-based GUID
+            *  creations per millisecond.
+            *
+            * @get {number}, An unsigned integer in the range of [0..9999]
+            */
+            readonly GUIDCounter: number;
+            /**
+            * @description Returns the raw clock sequence of the current time-based GUID as a number. That means the variant
+            *  number is not part of the returned clock sequence number.
+            *
+            * @get {number}
+            */
+            readonly clockSequence: number;
+            /**
+            * @description Returns the value of the time stamp of this time-based GUID as milliseconds passed since
+            *  '1582-10-25T00:00:00.000Z'. Subtract the clock offset from the result to get a JavaScript conform milliseconds
+            *  count to use with a Date object.
+            *
+            * @see TS.TypeCode.TimeFields.rfc4122ClockOffset
+            *
+            * @get {number}
+            */
+            readonly timeInMillisecond: number;
+            /**
+            * @description Returns true if the MAC address part of the current GUID is a random MAC address, otherwise false.
+            *  See the specification in rfc4122 paragraph 4.5.
+            *
+            * @see {@link https://www.ietf.org/rfc/rfc4122.txt | IETF}
+            *
+            * @get {boolean}
+            */
+            readonly isRandomMACAddress: boolean;
+            /**
+            * @constructor
+            *
+            * @description Creates a new time-based GUID using the information in the provided GUID to set the following
+            *  GUID parts:
+            *    - The MAC address (and also whether the MAC address is a random address or not.)
+            *    - The GUID counter (which will be increased by one if the current time in ms equals the provided GUID ms.)
+            *    - The timer reset counter (which will be increased by on if the time in the provided GUID failed validation.)
+            *  The constructor is NOT a copy constructor, even if it looks like one. The new constructed GUID will always
+            *  differ from the one provided in the constructor parameter GUID.
+            *
+            * @description The main purpose of this constructor is to continue an already established time-based GUID set.
+            *  You might need this constructor if you restart producing time-based GUIDs after a reboot of your OS or restart
+            *  of your application.
+            *
+            * @param {TS.TypeCode.TimeBasedGUID} GUID
+            *
+            * @throws {TS.InvalidTypeException}
+            * @throws {TS.InvalidInvokationException}
+            */
+            constructor(timeBasedGUID: TS.TypeCode.TimeBasedGUID);
+            /**
+            * @constructor
+            *
+            * @description Creates a new time-based GUID using MAC address provided in the constructor argument to set
+            *  the 'MACAddress' part of the GUID. The GUID counter and timer reset counter will be set to zero and
+            *  the milliseconds will be set by the current clock.
+            *
+            * @description The main usage of that constructor is to start an new set of time-based GUIDs which all
+            *  shall be identified by the provided MAC address. You might need this constructor if you start producing
+            *  time-based GUIDS for a new created database for example.
+            *
+            * @param {string} MACAddress
+            *
+            * @throws {TS.InvalidTypeException}
+            * @throws {TS.InvalidInvokationException}
+            */
+            constructor(MACAddress: string);
+            /**
+            * @constructor
+            *
+            * @description Creates a new time-based GUID using a random MAC address. The GUID counter and timer reset
+            *  counter will be set to zero and the milliseconds will be set by the current clock.
+            *
+            * @description The main usage of that constructor is to start an new set of time-based GUIDs which all
+            *  shall be identified by the new created random MAC address. You might need this constructor if you start
+            *  producing time-based GUIDs for a new created database for example. Use this constructor if your system doesn't
+            *  support a valid MAC address or you don't want to use an existing MAC address for security reasons.
+            */
+            constructor();
+            /**
+            * @description
+            *
+            * @param {string} canonicalGUIDString
+            *
+            * @returns {TS.TypeCode.TimeBasedGUID}
+            *
+            * @throws {TS.InvalidTypeException}
+             */
+            static parse(canonicalGUIDString: string): TS.TypeCode.TimeBasedGUID;
+            /**
+            * @description
+            *
+            * @protected
+            *
+            * @param {string} canonicalGUIDString
+            *
+            * @returns {string}, The MAC address as string
+            *
+            * @throws {TS.InvalidTypeException}
+             */
+            protected static getMACAddress(canonicalGUIDString: string): string;
+            protected static getGUIDCounter(canonicalGUIDString: string): number;
+            protected static getClockSequence(canonicalGUIDString: string): number;
+            protected static getTimeInMillisecond(canonicalGUIDString: string): number;
+            protected static getIsRandomMACAddress(canonicalGUIDString: string): boolean;
+        }
+        /**
+        * @class TS.TypeCode.TimeBasedGUIDGenerator
+        *
+        * @implements {Iterator<TS.TypeCode.TimeBasedGUID>}
+        *
+        * @description A generator for time based GUIDs. Once initialized with a valid time based GUID, all
+        *  subsequent GUIDs returned from this generator will be continuations of the one used during
+        *  initialization. That means the MAC or random MAC address will be the same. The clockSequence will
+        *  be the same if the GUID used during initialization had a time stamp in the past. Otherwise the
+        *  clockSequence will be one higher.
+        */
+        class TimeBasedGUIDGenerator implements Iterator<TS.TypeCode.TimeBasedGUID> {
+            private internalTimeBasedGUID;
+            /**
+            * @implements {Iterator<TS.TypeCode.TimeBasedGUID>}
+            *
+            * @returns {IteratorResult<TS.TypeCode.TimeBasedGUID>}
+            */
+            next: () => IteratorResult<TS.TypeCode.TimeBasedGUID>;
+            /**
+            * @implements {Iterator<TS.TypeCode.TimeBasedGUID>}
+            *
+            * @returns {Iterator<TS.TypeCode.TimeBasedGUID>}
+            */
+            [Symbol.iterator](): Iterator<TS.TypeCode.TimeBasedGUID>;
+            /**
+            * @constructor
+            *
+            * @description Creates a new time based GUID generator based on the time based GUID provided in argument
+            *  'lastTimeBaseGUID'. The returned GUIDs will build a continuous sequence of time based GUIDs belonging
+            *  to the same set as the GUID provided in argument 'lastTimeBasedGUID'.
+            *
+            * @param {TS.TypeCode.TimeBasedGUID}, The last valid time based GUID to initialize the generator.
+            *
+            * @throws {TS.InvalidInvokationException}
+            * @throws {TS.ArgumentNullOrUndefinedException}
+            * @throws {TS.InvalidTypeException}
+            */
+            constructor(lastTimeBasedGUID: TS.TypeCode.TimeBasedGUID);
+        }
+    }
+}
+declare namespace TS {
     namespace Encoding {
         /**
         * @class TS.Encoding.Base64
@@ -2184,9 +2970,12 @@ declare namespace TS {
             *  is functional equivalent to the following C# code:
             *
             * @example
+            * ```typescript
+            *
             *  var byteArray = System.Convert.FromBase64String(data));
             *
             *  var resultString = System.Text.Encoding.UTF8.GetString(byteArray);
+            *```
             *
             * @static
             *
@@ -2205,7 +2994,10 @@ declare namespace TS {
             *  decodeToByteArray function is functional equivalent to the following C# code:
             *
             * @example
+            *```typescript
+            *
             *  var byteArray = System.Convert.FromBase64String(data));
+            *```
             *
             * @static
             *
@@ -2224,9 +3016,12 @@ declare namespace TS {
             *  returns that encoded string. The encode function is functional equivalent to the following C# code:
             *
             * @example
+            *```typescript
+            *
             *  var byteArray = System.Text.Encoding.UTF8.GetBytes(data);
             *
             *  var resultString = System.Convert.ToBase64String(byteArray);
+            *```
             *
             * @static
             *
@@ -2301,15 +3096,24 @@ declare namespace TS {
 declare namespace TS {
     namespace IO {
         enum StreamStateEnum {
+            /** Signals that the stream is ready for further write operations. */
             READY = 0,
+            /** Signals that the stream is going to close. No further write operations allowed. */
             REQUEST_FOR_CLOSE = 1,
+            /** Signals that the stream is closed. No further write or read operations allowed. */
             CLOSED = 2,
+            /** Signals that the stream is in an error state. No further write or read operations allowed. */
             ERROR = 3,
         }
     }
 }
 declare namespace TS {
     namespace IO {
+        /**
+        * @interface TS.IO.IStream
+        *
+        * @description Common interface which must be implemented by all 'Stream' types.
+        */
         interface IStream<T> {
             /**
             * @description Synchronous write operation.
@@ -2350,7 +3154,7 @@ declare namespace TS {
             /**
             * @description A flag which tells whether the stream is ready for write operations. If 'canWrite' is true, that
             *  doesn't necessarily mean that there is enough buffer space for your next write operation if you are in
-            *  synchronous mode.
+            *  synchronous mode. You should check the free buffer size before.
             *
             * @see freeBufferSize
             */
@@ -2379,6 +3183,8 @@ declare namespace TS {
         /**
         * @class TS.IO.Stream
         *
+        * @implements {TS.IO.IStream<T>}
+        *
         * @description This is a simple buffered stream implementation. The stream is a one time stream and unidirectional.
         *  One time stream means, you can't use that stream any longer after the stream has closed or ran into an error
         *  state. Unidirectional means you can transport elements form the sender to the receiver but not vice versa. The
@@ -2388,8 +3194,6 @@ declare namespace TS {
         *  one of the other constructors. The stream is not a byte stream. That means simple types are transfered by value
         *  but reference types will be transfered as reference. The object on the receiver side is the same as the one on
         *  the sender side and not a deserialized clone of that object. Keep that in mind to avoid unexpected behavior.
-        *
-        * @implements {TS.IO.IStream<T>}
         */
         class Stream<T> implements TS.IO.IStream<T> {
             private internalDataAnnounceTimeout;
@@ -2404,129 +3208,139 @@ declare namespace TS {
             private internalOnData;
             private internalOutstandingPromiseCounter;
             /**
-            * @description Returns the current stream state.
-            *
             * @implements {TS.IO.IStream}
             *
-            * @get {TS.IO.StreamStateEnum}
-            */
-            readonly state: TS.IO.StreamStateEnum;
-            /**
-            * @description Returns the exception which locked the stream.
-            *
-            * @implements {TS.IO.IStream}
-            *
-            * @get { TS.Exception}
-            */
-            readonly error: TS.Exception | null;
-            /**
-            * @description Returns true if the stream is in an error state.
-            *
-            * @implements {TS.IO.IStream}
-            *
-            * @get {boolean}
-            */
-            readonly hasError: boolean;
-            /**
-            * @description Returns true if the stream buffer has data to read.
-            *
-            * @implements {TS.IO.IStream}
-            *
-            * @get {boolean}
-            */
-            readonly hasData: boolean;
-            /**
-            * @description Returns true if the stream is close.
-            *
-            * @implements {TS.IO.IStream}
-            *
-            * @get {boolean}
-            */
-            readonly isClosed: boolean;
-            /**
-            * @description Returns the 'onClosed' callback function which was set during construction or null.
-            *
-            * @implements {TS.IO.IStream}
-            *
-            * @get {((stream: TS.IO.IStream<T>) => void) | null}
-            */
-            readonly onClosed: ((stream: TS.IO.IStream<T>) => void) | null;
-            /**
-            * @description Returns the 'onData' callback function which was set during construction or null.
-            *
-            * @implements {TS.IO.IStream}
-            *
-            * @get {((stream: TS.IO.IStream<T>) => void) | null}
-            */
-            readonly onData: ((stream: TS.IO.IStream<T>) => void) | null;
-            /**
-            * @description Returns the 'onError' callback function which was set during construction or null.
-            *
-            * @implements {TS.IO.IStream}
-            *
-            * @get {((stream: TS.IO.IStream<T>) => void) | null}
-            */
-            readonly onError: ((stream: TS.IO.IStream<T>) => void) | null;
-            /**
-            * @description Returns true if the stream is ready for write operations.
-            *
-            * @implements {TS.IO.IStream}
-            *
-            * @get {boolean}
-            */
-            readonly canWrite: boolean;
-            /**
-            * @description Returns size of the buffer which is currently available.
-            *
-            * @implements {TS.IO.IStream}
-            *
-            * @get {number}
-            */
-            readonly freeBufferSize: number;
-            /**
             * @description Returns true if the stream is ready for read operations.
-            *
-            * @implements {TS.IO.IStream}
             *
             * @get {boolean}
             */
             readonly canRead: boolean;
             /**
+            * @implements {TS.IO.IStream}
+            *
+            * @description Returns true if the stream is ready for write operations.
+            *
+            * @get {boolean}
+            */
+            readonly canWrite: boolean;
+            /**
+            * @description Returns the default buffer size which is use if there is no user defined buffer size available.
+            *
+            * @get {number}
+            */
+            readonly DEFAULT_BUFFER_SIZE: number;
+            /**
+            * @implements {TS.IO.IStream}
+            *
+            * @description Returns the exception which locked the stream.
+            *
+            * @get { TS.Exception}
+            */
+            readonly error: TS.Exception | null;
+            /**
+            * @implements {TS.IO.IStream}
+            *
+            * @description Returns size of the buffer which is currently available.
+            *
+            * @get {number}
+            */
+            readonly freeBufferSize: number;
+            /**
+            * @implements {TS.IO.IStream}
+            *
+            * @description Returns true if the stream buffer has data to read.
+            *
+            * @get {boolean}
+            */
+            readonly hasData: boolean;
+            /**
+            * @implements {TS.IO.IStream}
+            *
+            * @description Returns true if the stream is in an error state.
+            *
+            * @get {boolean}
+            */
+            readonly hasError: boolean;
+            /**
+            * @implements {TS.IO.IStream}
+            *
+            * @description Returns true if the stream is close.
+            *
+            * @get {boolean}
+            */
+            readonly isClosed: boolean;
+            /**
+            * @implements {TS.IO.IStream}
+            *
+            * @description Returns the 'onClosed' callback function which was set during construction or null.
+            *
+            * @get {((stream: TS.IO.IStream<T>) => void) | null}
+            */
+            readonly onClosed: ((stream: TS.IO.IStream<T>) => void) | null;
+            /**
+            * @implements {TS.IO.IStream}
+            *
+            * @description Returns the 'onData' callback function which was set during construction or null.
+            *
+            * @get {((stream: TS.IO.IStream<T>) => void) | null}
+            */
+            readonly onData: ((stream: TS.IO.IStream<T>) => void) | null;
+            /**
+            * @implements {TS.IO.IStream}
+            *
+            * @description Returns the 'onError' callback function which was set during construction or null.
+            *
+            * @get {((stream: TS.IO.IStream<T>) => void) | null}
+            */
+            readonly onError: ((stream: TS.IO.IStream<T>) => void) | null;
+            /**
+            * @implements {TS.IO.IStream}
+            *
+            * @description Returns the current stream state.
+            *
+            * @get {TS.IO.StreamStateEnum}
+            */
+            readonly state: TS.IO.StreamStateEnum;
+            /**
             * @constructor
             *
-            * @description Creates a new stream with the maximum buffer size set to 'Number.MAX_SAFE_INTEGER'.
+            * @description Creates a new stream with a a buffer size of 'DEFAULT_BUFFER_SIZE'.
             */
             constructor();
             /**
             * @constructor
             *
-            * @description Creates a new stream with the maximum buffer size set to value given in argument 'maxBufferSize'.
+            * @description Creates a new stream with the maximum buffer size set to the value given in argument 'maxBufferSize'.
+            *  The buffer size is not measured in bits, bytes or anything and is simply the number of elements of type <T>
+            *  which can be stored in the buffer.
             *
             * @param {number} maxBufferSize, Must be a valid integer > 0.
             *
             * @throws {TS.InvalidTypeException}
             * @throws {TS.ArgumentOutOfRangeException}
             * @throws {TS.ArgumentNullOrUndefinedException}
-            * @throws {InvalidInvocationException}
+            * @throws {InvalidInvokationException}
             */
             constructor(maxBufferSize: number);
             /**
             * @constructor
             *
             * @description Creates a new stream with the maximum buffer size set to value given in argument 'maxBufferSize'.
+            *  The buffer size is not measured in bits, bytes or anything and is simply the number of elements of type <T>
+            *  which can be stored in the buffer.
             *  Binds the callback functions to the corresponding events for transmission control on the receiver side.
             *
             * @param {number} maxBufferSize, Must be a valid integer > 0.
-            * @param {(stream: TS.IO.IStream<T>) => void} onClosedCallback, Callback which gets called when the stream closed.
-            * @param {(stream: TS.IO.IStream<T>) => void} onDataCallback, Callback which gets called when new data arrived.
-            * @param {(stream: TS.IO.IStream<T>) => void} onErrorCallback, Callback which gets called when an error occurred.
+            * @param {(stream: TS.IO.IStream<T>) => void} onClosed, Callback which gets called when the stream closed.
+            * @param {(stream: TS.IO.IStream<T>) => void} onData, Callback which gets called when new data arrived.
+            * @param {(stream: TS.IO.IStream<T>) => void} onError, Callback which gets called when an error occurred.
             *
             * @throws {TS.InvalidTypeException}
             * @throws {TS.ArgumentOutOfRangeException}
             * @throws {TS.ArgumentNullOrUndefinedException}
-            * @throws {InvalidInvocationException}
+            * @throws {InvalidInvokationException}
             */
-            constructor(maxBufferSize: number, onClosedCallback: (stream: TS.IO.IStream<T>) => void, onDataCallback: (stream: TS.IO.IStream<T>) => void, onErrorCallback: (stream: TS.IO.IStream<T>) => void);
+            constructor(maxBufferSize: number, onClosed: (stream: TS.IO.IStream<T>) => void, onData: (stream: TS.IO.IStream<T>) => void, onError: (stream: TS.IO.IStream<T>) => void);
             /**
             * @description Tries to call the 'onData' callback handler.
             */
@@ -2590,11 +3404,11 @@ declare namespace TS {
             */
             private internalClose();
             /**
+            * @implements {TS.IO.IStream}
+            *
             * @description Writes the data given in argument 'data' to the stream in a synchronous way. This function may call
             *  the stream 'onError' callback for a 'TS.BufferOverrunException' exceptions which may rise during the write
             *  operation.
-            *
-            * @implements {TS.IO.IStream}
             *
             * @param {T | Array<T>} data, A single value of type T or an arbitrary array of type T which is the payload to write.
             *
@@ -2605,6 +3419,8 @@ declare namespace TS {
             */
             write(data: T | Array<T>): void;
             /**
+            * @implements {TS.IO.IStream}
+            *
             * @description The function returns a promise which will have written the data to the buffer, once it is resolved.
             *  The data may hold an array of type T or a single value of type T. The single value must not be undefined as
             *  well as the array of type T must be a dense array. (Must not contain undefined values)
@@ -2613,8 +3429,6 @@ declare namespace TS {
             *  yourself if the order of the data is important in any way. You may also use the synchronous 'write' function.
             *  This function may call the stream 'onError' callback for 'TS.InvalidOperationException' and
             *  'TS.TimeoutException' exceptions which may rise during the promise execution.
-            *
-            * @implements {TS.IO.IStream}
             *
             * @param {T | Array<T>} data, A single value of type T or an arbitrary array of type T which is the payload to write.
             * @param {number} timeout, Write operation timeout in seconds. Must be an unsigned integer > 0.
@@ -2647,12 +3461,197 @@ declare namespace TS {
             */
             readBuffer(): Array<T>;
             /**
-            * @description Places a request to close the stream. After a call to this function further write operation are
-            *  allowed. A violation of that rule will leave the stream in an erroneous state.
-            *
             * @implements {TS.IO.IStream}
+            *
+            * @description Places a request to close the stream. After a call to this function no further write operation is
+            *  allowed. A violation of that rule will leave the stream in an erroneous state.
             */
             close(): void;
+        }
+    }
+}
+declare namespace TS {
+    namespace IO {
+        /**
+        * @class TS.IO.ByteStream
+        *
+        * @extends {TS.IO.Stream}
+        *
+        * @description An implementation of a byte stream. The stream inherits from 'TS.IO.Stream' and has a fixed type
+        *  which is number. I used the number type because there is no byte type in JavaScript. But in fact, the stream
+        *  doesn't allow elements outside the range of [0..255]. Which is the number range of an unsigned byte value.
+        *  Each attempt to write a value outside that range or to write a value which isn't a number at all will result
+        *  in an 'TS.InvalidTypeException' exception.
+        */
+        class ByteStream extends TS.IO.Stream<number> {
+            /**
+            * @constructor
+            *
+            * @description Creates a new stream with a a buffer size of 'DEFAULT_BUFFER_SIZE'.
+            */
+            constructor();
+            /**
+            * @constructor
+            *
+            * @description Creates a new byte stream with the maximum buffer size set to the value given in argument
+            *  'maxBufferSize'.
+            *
+            * @param {number} maxBufferSize, Must be a valid integer > 0.
+            *
+            * @throws {TS.InvalidTypeException}
+            * @throws {TS.ArgumentOutOfRangeException}
+            * @throws {TS.ArgumentNullOrUndefinedException}
+            * @throws {InvalidInvokationException}
+            */
+            constructor(maxBufferSize: number);
+            /**
+            * @constructor
+            *
+            * @description Creates a new byte stream with the maximum buffer size set to the value given in argument
+            *  'maxBufferSize'.
+            *  Binds the callback functions to the corresponding events for transmission control on the receiver side.
+            *
+            * @param {number} maxBufferSize, Must be a valid integer > 0.
+            * @param {(stream: TS.IO.IStream<number>) => void} onClosed, Callback which gets called when the stream closed.
+            * @param {(stream: TS.IO.IStream<number>) => void} onData, Callback which gets called when new data arrived.
+            * @param {(stream: TS.IO.IStream<number>) => void} onError, Callback which gets called when an error occurred.
+            *
+            * @throws {TS.InvalidTypeException}
+            * @throws {TS.ArgumentOutOfRangeException}
+            * @throws {TS.ArgumentNullOrUndefinedException}
+            * @throws {InvalidInvokationException}
+            */
+            constructor(maxBufferSize: number, onClosed: (stream: TS.IO.IStream<number>) => void, onData: (stream: TS.IO.IStream<number>) => void, onError: (stream: TS.IO.IStream<number>) => void);
+            /**
+            * @description Writes the data given in argument 'data' to the stream in a synchronous way. This function may call
+            *  the stream 'onError' callback for a 'TS.BufferOverrunException' exceptions which may rise during the write
+            *  operation.
+            *
+            * @override {TS.IO.Stream<T>}
+            *
+            * @param {number| Array<number>} data, A single value of type byte or an arbitrary array of type byte which is the payload to write.
+            *
+            * @throws {TS.ArgumentUndefinedException}
+            * @throws {TS.InvalidTypeException}
+            * @throws {TS.InvalidOperationException}
+            * @throws {TS.BufferOverrunException}
+            */
+            write(data: number | Array<number>): void;
+            /**
+            * @description The function returns a promise which will have written the data to the buffer, once it is resolved.
+            *  The data may hold an array of type byte or a single value of type byte. The single value must not be undefined
+            *  as well as the array of type byte must be a dense array. (Must not contain undefined values)
+            *  The asynchronous write operation does not guarantee that the data gets streamed in the same order it was
+            *  supplied to the 'writeAsync' function. You need to synchronize your calls to the 'writeAsync' function
+            *  yourself if the order of the data is important in any way. You may also use the synchronous 'write' function.
+            *  This function may call the stream 'onError' callback for 'TS.InvalidOperationException' and
+            *  'TS.TimeoutException' exceptions which may rise during the promise execution.
+            *
+            * @override {TS.IO.Stream<T>}
+            *
+            * @param {number | Array<number>} data, A single value of type byte or an arbitrary array of type byte which is
+            *  the payload to write operation.
+            * @param {number} timeout, Write operation timeout in seconds. Must be an unsigned integer > 0.
+            *
+            * @returns {Promise<any>}, Resolves with a void value and signals 'TS.InvalidOperationException' and
+            *  'TS.TimeoutException' on the reject callback.
+            *
+            * @throws {TS.ArgumentUndefinedException}
+            * @throws {TS.InvalidTypeException}
+            * @throws {TS.InvalidOperationException}
+            */
+            writeAsync(data: number | Array<number>, timeout?: number): Promise<any>;
+        }
+    }
+}
+declare namespace TS {
+    namespace IO {
+        /**
+        * @class TS.IO.BitStringStream
+        *
+        * @extends {TS.IO.Stream}
+        *
+        * @description An implementation of a bit string stream. The stream inherits from 'TS.IO.Stream' and has a fixed type
+        *  which is string. But in fact it is a bit string. That is a string which consists of an arbitrary number of the two
+        *  characters [0, 1]. The stream doesn't allow other strings. Each attempt to write an invalid string or to write a
+        *  value which isn't a string at all will result in an 'TS.InvalidTypeException' exception.
+        */
+        class BitStringStream extends TS.IO.Stream<string> {
+            /**
+            * @constructor
+            *
+            * @description Creates a new stream with a a buffer size of 'DEFAULT_BUFFER_SIZE'.
+            */
+            constructor();
+            /**
+            * @constructor
+            *
+            * @description Creates a new stream with the maximum buffer size set to the value given in argument 'maxBufferSize'.
+            *
+            * @param {number} maxBufferSize, Must be a valid integer > 0.
+            *
+            * @throws {TS.InvalidTypeException}
+            * @throws {TS.ArgumentOutOfRangeException}
+            * @throws {TS.ArgumentNullOrUndefinedException}
+            * @throws {InvalidInvokationException}
+            */
+            constructor(maxBufferSize: number);
+            /**
+            * @constructor
+            *
+            * @description Creates a new stream with the maximum buffer size set to value given in argument 'maxBufferSize'.
+            *  Binds the callback functions to the corresponding events for transmission control on the receiver side.
+            *
+            * @param {number} maxBufferSize, Must be a valid integer > 0.
+            * @param {(stream: TS.IO.IStream<string>) => void} onClosed, Callback which gets called when the stream closed.
+            * @param {(stream: TS.IO.IStream<string>) => void} onData, Callback which gets called when new data arrived.
+            * @param {(stream: TS.IO.IStream<string>) => void} onError, Callback which gets called when an error occurred.
+            *
+            * @throws {TS.InvalidTypeException}
+            * @throws {TS.ArgumentOutOfRangeException}
+            * @throws {TS.ArgumentNullOrUndefinedException}
+            * @throws {InvalidInvokationException}
+            */
+            constructor(maxBufferSize: number, onClosed: (stream: TS.IO.IStream<string>) => void, onData: (stream: TS.IO.IStream<string>) => void, onError: (stream: TS.IO.IStream<string>) => void);
+            /**
+            * @description Writes the data given in argument 'data' to the stream in a synchronous way. This function may call
+            *  the stream 'onError' callback for a 'TS.BufferOverrunException' exceptions which may rise during the write
+            *  operation.
+            *
+            * @override {TS.IO.Stream<T>}
+            *
+            * @param {string| Array<string>} data, A single value of type bit string or an arbitrary array of type bit string
+            *  which is the payload to write operation.
+            *
+            * @throws {TS.ArgumentUndefinedException}
+            * @throws {TS.InvalidTypeException}
+            * @throws {TS.InvalidOperationException}
+            * @throws {TS.BufferOverrunException}
+            */
+            write(data: string | Array<string>): void;
+            /**
+            * @description The function returns a promise which will have written the data to the buffer, once it is resolved.
+            *  The data may hold an array of type bit string or a single value of type bit string. The single value must not
+            *  be undefined as well as the array of type bit string must be a dense array. (Must not contain undefined values)
+            *  The asynchronous write operation does not guarantee that the data gets streamed in the same order it was
+            *  supplied to the 'writeAsync' function. You need to synchronize your calls to the 'writeAsync' function
+            *  yourself if the order of the data is important in any way. You may also use the synchronous 'write' function.
+            *  This function may call the stream 'onError' callback for 'TS.InvalidOperationException' and
+            *  'TS.TimeoutException' exceptions which may rise during the promise execution.
+            *
+            * @override {TS.IO.Stream<T>}
+            *
+            * @param {string | Array<string>} data, A single value of type byte or an arbitrary array of type byte which is the payload to write.
+            * @param {number} timeout, Write operation timeout in seconds. Must be an unsigned integer > 0.
+            *
+            * @returns {Promise<any>}, Resolves with a void value and signals 'TS.InvalidOperationException' and
+            *  'TS.TimeoutException' on the reject callback.
+            *
+            * @throws {TS.ArgumentUndefinedException}
+            * @throws {TS.InvalidTypeException}
+            * @throws {TS.InvalidOperationException}
+            */
+            writeAsync(data: string | Array<string>, timeout?: number): Promise<any>;
         }
     }
 }

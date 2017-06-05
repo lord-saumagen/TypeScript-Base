@@ -76,9 +76,12 @@ namespace TS
       *  is functional equivalent to the following C# code:
       *
       * @example
+      * ```typescript
+      *
       *  var byteArray = System.Convert.FromBase64String(data));
       *
       *  var resultString = System.Text.Encoding.UTF8.GetString(byteArray);
+      *```
       *
       * @static
       *
@@ -141,7 +144,10 @@ namespace TS
       *  decodeToByteArray function is functional equivalent to the following C# code:
       *
       * @example
+      *```typescript
+      *
       *  var byteArray = System.Convert.FromBase64String(data));
+      *```
       *
       * @static
       *
@@ -246,9 +252,12 @@ namespace TS
       *  returns that encoded string. The encode function is functional equivalent to the following C# code:
       *
       * @example
+      *```typescript
+      *
       *  var byteArray = System.Text.Encoding.UTF8.GetBytes(data);
       *
       *  var resultString = System.Convert.ToBase64String(byteArray);
+      *```
       *
       * @static
       *

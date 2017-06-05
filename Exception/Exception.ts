@@ -5,14 +5,14 @@
   /**
   * @class TS.Exception
   *
+  * @implements {Error}
+  *
   * @description The base class of all exceptions defined in this framework. The Exception class has a public read only
   *  property called 'type' which returns the fully qualified type name of the exception class. This way you are able
   *  to create a finer granular error handling based on the exception type. Your are not longer forced to parse the
   *  error message string to infer the nature of the exception. Each subclass of the Exception class has to override
   *  the 'type' property to reflect the own type. The exception class has also a read only 'innerException' property
   *  which allows to create an exception stack which links back to the root exception.
-  *
-  * @implements {Error}
   */
   export class Exception implements Error
   {
@@ -39,9 +39,9 @@
     }
 
     /**
-    * @description The error message.
-    *
     * @implements {Error}
+    *
+    * @description The error message.
     *
     * @get {string} message
     */
@@ -51,9 +51,9 @@
     }
 
     /**
-    * @description The error name. It's the same as the type.
-    *
     * @implements {Error}
+    *
+    * @description The error name. It's the same as the type.
     *
     * @get {string} name
     */
@@ -77,8 +77,8 @@
     /**
     * @constructor
     *
-    * @param {string} message?, An optional message string.
-    * @param {Exception} innerException?, An optional inner exception.
+    * @param {string} message, An optional message string.
+    * @param {Exception} innerException, An optional inner exception.
     */
     constructor(message: string = "", innerException?: TS.Exception)
     {
@@ -135,10 +135,10 @@
   /**
   * @class TS.AmbiguousResultException
   *
+  * @extends {TS.Exception}
+  *
   * @description This exception signals a an error where an operation which is specified to deliver a single result
   *  fails because there are multiple possible results available.
-  *
-  * @extends {TS.Exception}
   */
   export class AmbiguousResultException extends TS.Exception
   {
@@ -208,9 +208,9 @@
   /**
   * @class TS.ArgumentException
   *
-  * @description This exceptions signals a general error caused by an invalid argument.
-  *
   * @extends {TS.Exception}
+  *
+  * @description This exceptions signals a general error caused by an invalid argument.
   */
   export class ArgumentException extends TS.Exception
   {
@@ -275,9 +275,9 @@
   /**
   * @class TS.ArgumentNullException
   *
-  * @description This exception signals an error caused by an unexpected null value in an argument.
-  *
   * @extends {TS.ArgumentException}
+  *
+  * @description This exception signals an error caused by an unexpected null value in an argument.
   */
   export class ArgumentNullException extends TS.ArgumentException
   {
@@ -310,11 +310,11 @@
   /**
   * @class TS.ArgumentNullOrUndefinedException
   *
+  * @extends {TS.ArgumentException}
+  *
   * @description This exceptions signals an error caused by an unexpected undefined or null value in an argument. The
   *  argument value of that exception will always be null and doesn't reflect the exact argument value which caused
   *  this exception.
-  *
-  * @extends {TS.ArgumentException}
   */
   export class ArgumentNullOrUndefinedException extends TS.ArgumentException
   {
@@ -345,11 +345,11 @@
   /**
   * @class TS.ArgumentNullUndefOrEmptyException
   *
+  * @extends {TS.ArgumentException}
+  *
   * @description This exception signals an error caused by an unexpected undefined or null value in an argument or
   *  an unexpected emptiness for an argument like an empty string or array. The argument value of that exception
   *  will always be null and doesn't reflect the exact argument value which caused this exception.
-  *
-  * @extends {TS.ArgumentException}
   */
   export class ArgumentNullUndefOrEmptyException extends TS.ArgumentException
   {
@@ -380,10 +380,10 @@
   /**
   * @class TS.ArgumentNullUndefOrWhiteSpaceException
   *
+  * @extends {TS.ArgumentException}
+  *
   * @description This exceptions signals an unexpected emptiness of a string. The argument value of that exception
   *  will always be null and doesn't reflect the exact argument value which caused this exception.
-  *
-  * @extends {TS.ArgumentException}
   */
   export class ArgumentNullUndefOrWhiteSpaceException extends TS.ArgumentException
   {
@@ -414,9 +414,9 @@
   /**
   * @class TS.ArgumentOutOfRangeException
   *
-  * @description This exceptions signals that an argument exceeded the range of allowed values.
-  *
   * @extends {TS.ArgumentException}
+  *
+  * @description This exceptions signals that an argument exceeded the range of allowed values.
   */
   export class ArgumentOutOfRangeException extends TS.ArgumentException
   {
@@ -449,9 +449,9 @@
   /**
   * @class TS.ArgumentUndefinedException
   *
-  * @description This exceptions signals an error caused by an unexpected undefined value in an argument.
-  *
   * @extends {TS.ArgumentException}
+  *
+  * @description This exceptions signals an error caused by an unexpected undefined value in an argument.
   */
   export class ArgumentUndefinedException extends TS.ArgumentException
   {
@@ -488,16 +488,18 @@
   /**
   * @class TS.IndexOutOfRangeException
   *
-  * @description This exceptions signals that an index value exceeded the range of indexable elements.
-  *
   * @extends {TS.Exception}
+  *
+  * @description This exceptions signals that an index value exceeded the range of indexable elements.
   */
   export class IndexOutOfRangeException extends TS.Exception
   {
     /**
-    * @get {string} type
     * @public
+    *
     * @override {TS.Exception}
+    *
+    * @get {string} type
     */
     public get type(): string
     {
@@ -523,13 +525,13 @@
 
 
   /**
-  * @class TS.InvalidInvocationException
-  *
-  * @description This exceptions signals that a function was invoked in an unexpected or invalid way.
+  * @class TS.InvalidInvokationException
   *
   * @extends {TS.Exception}
+  *
+  * @description This exceptions signals that a function was invoked in an unexpected or invalid way.
   */
-  export class InvalidInvocationException extends TS.Exception
+  export class InvalidInvokationException extends TS.Exception
   {
     /**
     * @override {TS.Exception}
@@ -538,7 +540,7 @@
     */
     public get type(): string
     {
-      return "TS.InvalidInvocationException";
+      return "TS.InvalidInvokationException";
     }
 
     /**
@@ -562,10 +564,10 @@
   /**
   * @class TS.InvalidOperationException
   *
+  * @extends {TS.Exception}
+  *
   * @description This exceptions signals an attempt to start an operation which was not allowed to start in the current
   *  situation.
-  *
-  * @extends {TS.Exception}
   */
   export class InvalidOperationException extends TS.Exception
   {
@@ -602,9 +604,9 @@
   /**
   * @class TS.InvalidCastException
   *
-  * @description This exceptions signals that a casting operation failed.
-
   * @extends {TS.Exception}
+  *
+  * @description This exceptions signals that a casting operation failed.
   */
   export class InvalidCastException extends TS.Exception
   {
@@ -639,9 +641,9 @@
   /**
   * @class TS.InvalidFormatException
   *
-  * @description This exceptions signals that an operation failed because of an invalid format of some data.
-  *
   * @extends {TS.Exception}
+  *
+  * @description This exceptions signals that an operation failed because of an invalid format of some data.
   */
   export class InvalidFormatException extends TS.Exception
   {
@@ -708,9 +710,9 @@
   /**
   * @class TS.InvalidTypeException
   *
-  * @description This exceptions signals that an argument has an invalid type.
-  *
   * @extends {TS.Exception}
+  *
+  * @description This exceptions signals that an argument has an invalid type.
   */
   export class InvalidTypeException extends TS.Exception
   {
@@ -777,12 +779,12 @@
   /**
   * @class TS.ArithmeticException
   *
+  * @extends {TS.Exception}
+  *
   * @description This exception signals an errors in an arithmetic, casting, or conversion operation.
   *  ArithmeticException is the base class for DivideByZeroException, NotFiniteNumberException, and OverflowException.
   *  Use one of the derived classes of ArithmeticException if appropriate to the exact nature of the error.
   *  Throw an ArithmeticException if there is no appropriate subclass to describe the nature of the error.
-  *
-  * @extends {TS.Exception}
   */
   export class ArithmeticException extends TS.Exception
   {
@@ -815,9 +817,9 @@
   /**
   * @class TS.OverflowException
   *
-  * @description This exception signals that an arithmetic, casting, or conversion operation results in an overflow.
-  *
   * @extends {TS.ArithmeticException}
+  *
+  * @description This exception signals that an arithmetic, casting, or conversion operation results in an overflow.
   */
   export class OverflowException extends ArithmeticException
   {
@@ -849,9 +851,9 @@
   /**
   * @class TS.DividedByZeroException
   *
-  * @description This exception signals an attempt to divide a number value by zero.
-  *
   * @extends {TS.ArithmeticException}
+  *
+  * @description This exception signals an attempt to divide a number value by zero.
   */
   export class DividedByZeroException extends ArithmeticException
   {
@@ -883,10 +885,10 @@
   /**
   * @class TS.NotFiniteNumberException
   *
+  * @extends {TS.ArithmeticException}
+  *
   * @description This exception signals an attempt to execute an arithmetic operation with a number value which is
   *  either infinite or Not-a-Number (NaN).
-  *
-  * @extends {TS.ArithmeticException}
   */
   export class NotFiniteNumberException extends ArithmeticException
   {
@@ -923,9 +925,9 @@
   /**
   * @class TS.NotImplementedException
   *
-  * @description This exception signals that a function or class is not or not fully implemented and can't be used.
-  *
   * @extends {TS.Exception}
+  *
+  * @description This exception signals that a function or class is not or not fully implemented and can't be used.
   */
   export class NotImplementedException extends TS.Exception
   {
@@ -955,9 +957,9 @@
   /**
   * @class TS.DeprecatedException
   *
-  * @description This exception signals that a function or class should not longer be used.
-  *
   * @extends {TS.Exception}
+  *
+  * @description This exception signals that a function or class should not longer be used.
   */
   export class DeprecatedException extends TS.Exception
   {
@@ -992,9 +994,9 @@
   /**
   * @class TS.DirectoryNotFoundException
   *
-  * @description This exception signals if the file system is not able to locate the requested directory.
-  *
   * @extends {TS.Exception}
+  *
+  * @description This exception signals if the file system is not able to locate the requested directory.
   */
   export class DirectoryNotFoundException extends TS.Exception
   {
@@ -1061,9 +1063,9 @@
   /**
   * @class TS.BufferOverrunException
   *
-  * @description This exception signals if the file system is not able to locate the requested directory.
-  *
   * @extends {TS.Exception}
+  *
+  * @description This exception signals if the file system is not able to locate the requested directory.
   */
   export class BufferOverrunException extends TS.Exception
   {
@@ -1101,11 +1103,11 @@
   /**
   * @class TS.EnvironmentNotSupportedException
   *
+  * @extends {TS.Exception}
+  *
   * @description This exception that some operation failed because the current environment is not supported. That may
   *  be the reason if a JavaScript VM lacks some functions, a Node.js script is running in a browser or vice versa or
   *  the operation system is not supported.
-  *
-  * @extends {TS.Exception}
   */
   export class EnvironmentNotSupportedException extends TS.Exception
   {
@@ -1142,9 +1144,9 @@
   /**
   * @class TS.TimeoutException
   *
-  * @description This exception if thrown if a function or operation doesn't response in a timely manner.
-  *
   * @extends {TS.Exception}
+  *
+  * @description This exception if thrown if a function or operation doesn't response in a timely manner.
   */
   export class TimeoutException extends TS.Exception
   {

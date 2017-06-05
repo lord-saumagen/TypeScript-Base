@@ -9,6 +9,8 @@ namespace TS
     /**
     * @class TS.IO.Stream
     *
+    * @implements {TS.IO.IStream<T>}
+    *
     * @description This is a simple buffered stream implementation. The stream is a one time stream and unidirectional.
     *  One time stream means, you can't use that stream any longer after the stream has closed or ran into an error
     *  state. Unidirectional means you can transport elements form the sender to the receiver but not vice versa. The
@@ -18,8 +20,6 @@ namespace TS
     *  one of the other constructors. The stream is not a byte stream. That means simple types are transfered by value
     *  but reference types will be transfered as reference. The object on the receiver side is the same as the one on
     *  the sender side and not a deserialized clone of that object. Keep that in mind to avoid unexpected behavior.
-    *
-    * @implements {TS.IO.IStream<T>}
     */
     export class Stream<T> implements TS.IO.IStream<T>
     {
@@ -37,139 +37,9 @@ namespace TS
 
 
       /**
-      * @description Returns the current stream state.
-      *
       * @implements {TS.IO.IStream}
       *
-      * @get {TS.IO.StreamStateEnum}
-      */
-      public get state(): TS.IO.StreamStateEnum
-      {
-        return this.internalState;
-      }
-
-
-      /**
-      * @description Returns the exception which locked the stream.
-      *
-      * @implements {TS.IO.IStream}
-      *
-      * @get { TS.Exception}
-      */
-      public get error(): TS.Exception | null
-      {
-        return this.internalError;
-      }
-
-
-      /**
-      * @description Returns true if the stream is in an error state.
-      *
-      * @implements {TS.IO.IStream}
-      *
-      * @get {boolean}
-      */
-      public get hasError(): boolean
-      {
-        return this.internalError != null;
-      }
-
-
-      /**
-      * @description Returns true if the stream buffer has data to read.
-      *
-      * @implements {TS.IO.IStream}
-      *
-      * @get {boolean}
-      */
-      public get hasData(): boolean
-      {
-        return this.internalBuffer.length > 0;
-      }
-
-
-      /**
-      * @description Returns true if the stream is close.
-      *
-      * @implements {TS.IO.IStream}
-      *
-      * @get {boolean}
-      */
-      public get isClosed(): boolean
-      {
-        return this.state == TS.IO.StreamStateEnum.CLOSED;
-      }
-
-
-      /**
-      * @description Returns the 'onClosed' callback function which was set during construction or null.
-      *
-      * @implements {TS.IO.IStream}
-      *
-      * @get {((stream: TS.IO.IStream<T>) => void) | null}
-      */
-      public get onClosed(): ((stream: TS.IO.IStream<T>) => void) | null
-      {
-        return this.internalOnClosed;
-      }
-
-
-      /**
-      * @description Returns the 'onData' callback function which was set during construction or null.
-      *
-      * @implements {TS.IO.IStream}
-      *
-      * @get {((stream: TS.IO.IStream<T>) => void) | null}
-      */
-      public get onData(): ((stream: TS.IO.IStream<T>) => void) | null
-      {
-        return this.internalOnData;
-      }
-
-
-      /**
-      * @description Returns the 'onError' callback function which was set during construction or null.
-      *
-      * @implements {TS.IO.IStream}
-      *
-      * @get {((stream: TS.IO.IStream<T>) => void) | null}
-      */
-      public get onError(): ((stream: TS.IO.IStream<T>) => void) | null
-      {
-        return this.internalOnError;
-      }
-
-
-      /**
-      * @description Returns true if the stream is ready for write operations.
-      *
-      * @implements {TS.IO.IStream}
-      *
-      * @get {boolean}
-      */
-      public get canWrite(): boolean
-      {
-        return this.internalState == TS.IO.StreamStateEnum.READY;
-      }
-
-
-      /**
-      * @description Returns size of the buffer which is currently available.
-      *
-      * @implements {TS.IO.IStream}
-      *
-      * @get {number}
-      */
-      public get freeBufferSize(): number
-      {
-        return this.internalMaxBufferSize - this.internalBuffer.length;
-      }
-
-
-      /**
       * @description Returns true if the stream is ready for read operations.
-      *
-      * @implements {TS.IO.IStream}
       *
       * @get {boolean}
       */
@@ -180,48 +50,193 @@ namespace TS
 
 
       /**
+      * @implements {TS.IO.IStream}
+      *
+      * @description Returns true if the stream is ready for write operations.
+      *
+      * @get {boolean}
+      */
+      public get canWrite(): boolean
+      {
+        return this.internalState == TS.IO.StreamStateEnum.READY;
+      }
+
+
+      /**
+      * @description Returns the default buffer size which is use if there is no user defined buffer size available.
+      *
+      * @get {number}
+      */
+      public get DEFAULT_BUFFER_SIZE(): number
+      {
+        return 1024;
+      }
+
+
+      /**
+      * @implements {TS.IO.IStream}
+      *
+      * @description Returns the exception which locked the stream.
+      *
+      * @get { TS.Exception}
+      */
+      public get error(): TS.Exception | null
+      {
+        return this.internalError;
+      }
+
+
+      /**
+      * @implements {TS.IO.IStream}
+      *
+      * @description Returns size of the buffer which is currently available.
+      *
+      * @get {number}
+      */
+      public get freeBufferSize(): number
+      {
+        return this.internalMaxBufferSize - this.internalBuffer.length;
+      }
+
+
+      /**
+      * @implements {TS.IO.IStream}
+      *
+      * @description Returns true if the stream buffer has data to read.
+      *
+      * @get {boolean}
+      */
+      public get hasData(): boolean
+      {
+        return this.internalBuffer.length > 0;
+      }
+
+
+      /**
+      * @implements {TS.IO.IStream}
+      *
+      * @description Returns true if the stream is in an error state.
+      *
+      * @get {boolean}
+      */
+      public get hasError(): boolean
+      {
+        return this.internalError != null;
+      }
+
+
+      /**
+      * @implements {TS.IO.IStream}
+      *
+      * @description Returns true if the stream is close.
+      *
+      * @get {boolean}
+      */
+      public get isClosed(): boolean
+      {
+        return this.state == TS.IO.StreamStateEnum.CLOSED;
+      }
+
+
+      /**
+      * @implements {TS.IO.IStream}
+      *
+      * @description Returns the 'onClosed' callback function which was set during construction or null.
+      *
+      * @get {((stream: TS.IO.IStream<T>) => void) | null}
+      */
+      public get onClosed(): ((stream: TS.IO.IStream<T>) => void) | null
+      {
+        return this.internalOnClosed;
+      }
+
+
+      /**
+      * @implements {TS.IO.IStream}
+      *
+      * @description Returns the 'onData' callback function which was set during construction or null.
+      *
+      * @get {((stream: TS.IO.IStream<T>) => void) | null}
+      */
+      public get onData(): ((stream: TS.IO.IStream<T>) => void) | null
+      {
+        return this.internalOnData;
+      }
+
+
+      /**
+      * @implements {TS.IO.IStream}
+      *
+      * @description Returns the 'onError' callback function which was set during construction or null.
+      *
+      * @get {((stream: TS.IO.IStream<T>) => void) | null}
+      */
+      public get onError(): ((stream: TS.IO.IStream<T>) => void) | null
+      {
+        return this.internalOnError;
+      }
+
+
+      /**
+      * @implements {TS.IO.IStream}
+      *
+      * @description Returns the current stream state.
+      *
+      * @get {TS.IO.StreamStateEnum}
+      */
+      public get state(): TS.IO.StreamStateEnum
+      {
+        return this.internalState;
+      }
+
+
+      /**
       * @constructor
       *
-      * @description Creates a new stream with the maximum buffer size set to 'Number.MAX_SAFE_INTEGER'.
+      * @description Creates a new stream with a a buffer size of 'DEFAULT_BUFFER_SIZE'.
       */
       constructor()
       /**
       * @constructor
       *
-      * @description Creates a new stream with the maximum buffer size set to value given in argument 'maxBufferSize'.
+      * @description Creates a new stream with the maximum buffer size set to the value given in argument 'maxBufferSize'.
+      *  The buffer size is not measured in bits, bytes or anything and is simply the number of elements of type <T>
+      *  which can be stored in the buffer.
       *
       * @param {number} maxBufferSize, Must be a valid integer > 0.
       *
       * @throws {TS.InvalidTypeException}
       * @throws {TS.ArgumentOutOfRangeException}
       * @throws {TS.ArgumentNullOrUndefinedException}
-      * @throws {InvalidInvocationException}
+      * @throws {InvalidInvokationException}
       */
       constructor(maxBufferSize: number)
       /**
       * @constructor
       *
       * @description Creates a new stream with the maximum buffer size set to value given in argument 'maxBufferSize'.
+      *  The buffer size is not measured in bits, bytes or anything and is simply the number of elements of type <T>
+      *  which can be stored in the buffer.
       *  Binds the callback functions to the corresponding events for transmission control on the receiver side.
       *
       * @param {number} maxBufferSize, Must be a valid integer > 0.
-      * @param {(stream: TS.IO.IStream<T>) => void} onClosedCallback, Callback which gets called when the stream closed.
-      * @param {(stream: TS.IO.IStream<T>) => void} onDataCallback, Callback which gets called when new data arrived.
-      * @param {(stream: TS.IO.IStream<T>) => void} onErrorCallback, Callback which gets called when an error occurred.
+      * @param {(stream: TS.IO.IStream<T>) => void} onClosed, Callback which gets called when the stream closed.
+      * @param {(stream: TS.IO.IStream<T>) => void} onData, Callback which gets called when new data arrived.
+      * @param {(stream: TS.IO.IStream<T>) => void} onError, Callback which gets called when an error occurred.
       *
       * @throws {TS.InvalidTypeException}
       * @throws {TS.ArgumentOutOfRangeException}
       * @throws {TS.ArgumentNullOrUndefinedException}
-      * @throws {InvalidInvocationException}
+      * @throws {InvalidInvokationException}
       */
-      constructor(maxBufferSize: number, onClosedCallback: (stream: TS.IO.IStream<T>) => void, onDataCallback: (stream: TS.IO.IStream<T>) => void, onErrorCallback: (stream: TS.IO.IStream<T>) => void)
-      constructor(maxBufferSize?: number, onClosedCallback?: (stream: TS.IO.IStream<T>) => void, onDataCallback?: (stream: TS.IO.IStream<T>) => void, onErrorCallback?: (stream: TS.IO.IStream<T>) => void)
+      constructor(maxBufferSize: number, onClosed: (stream: TS.IO.IStream<T>) => void, onData: (stream: TS.IO.IStream<T>) => void, onError: (stream: TS.IO.IStream<T>) => void)
+      constructor(maxBufferSize?: number, onClosed?: (stream: TS.IO.IStream<T>) => void, onData?: (stream: TS.IO.IStream<T>) => void, onError?: (stream: TS.IO.IStream<T>) => void)
       {
         this.internalBuffer = new Array<T>();
 
         if (arguments.length == 0)
         {
-          this.internalMaxBufferSize = Number.MAX_SAFE_INTEGER;
+          this.internalMaxBufferSize = this.DEFAULT_BUFFER_SIZE;
         }
 
         if (arguments.length > 0)
@@ -232,21 +247,22 @@ namespace TS
           {
             throw new TS.ArgumentOutOfRangeException("maxBufferSize", maxBufferSize, "Argument 'maxBufferSize' must be an integer in the range of [1..Number.MAX_SAFE_INTEGER in function 'TS.IO.Stream.constructor'.")
           }
+
           this.internalMaxBufferSize = (maxBufferSize as number);
 
           if ((arguments.length > 1) && (arguments.length == 4))
           {
-            TS.Utils.checkFunctionParameter("onClosedCallback", onClosedCallback, "TS.IO.Stream.constructor");
-            TS.Utils.checkFunctionParameter("onDataCallback", onDataCallback, "TS.IO.Stream.constructor");
-            TS.Utils.checkFunctionParameter("onErrorCallback", onErrorCallback, "TS.IO.Stream.constructor");
-            this.internalOnClosed = (onClosedCallback as (stream: TS.IO.IStream<T>) => void);
-            this.internalOnData = (onDataCallback as (stream: TS.IO.IStream<T>) => void);
-            this.internalOnError = (onErrorCallback as (stream: TS.IO.IStream<T>) => void);
+            TS.Utils.checkFunctionParameter("onClosedCallback", onClosed, "TS.IO.Stream.constructor");
+            TS.Utils.checkFunctionParameter("onDataCallback", onData, "TS.IO.Stream.constructor");
+            TS.Utils.checkFunctionParameter("onErrorCallback", onError, "TS.IO.Stream.constructor");
+            this.internalOnClosed = (onClosed as (stream: TS.IO.IStream<T>) => void);
+            this.internalOnData = (onData as (stream: TS.IO.IStream<T>) => void);
+            this.internalOnError = (onError as (stream: TS.IO.IStream<T>) => void);
           }
 
           if ((arguments.length != 1) && (arguments.length != 4))
           {
-            throw new TS.InvalidInvocationException("One or all of the provided parameters in function 'constructor' are invalid. The error occurred in function 'TS.IO.Stream.constructor'.");
+            throw new TS.InvalidInvokationException("One or all of the provided parameters in function 'constructor' are invalid. The error occurred in function 'TS.IO.Stream.constructor'.");
           }
 
         }
@@ -435,11 +451,11 @@ namespace TS
 
 
       /**
+      * @implements {TS.IO.IStream}
+      *
       * @description Writes the data given in argument 'data' to the stream in a synchronous way. This function may call
       *  the stream 'onError' callback for a 'TS.BufferOverrunException' exceptions which may rise during the write
       *  operation.
-      *
-      * @implements {TS.IO.IStream}
       *
       * @param {T | Array<T>} data, A single value of type T or an arbitrary array of type T which is the payload to write.
       *
@@ -517,6 +533,8 @@ namespace TS
 
 
       /**
+      * @implements {TS.IO.IStream}
+      *
       * @description The function returns a promise which will have written the data to the buffer, once it is resolved.
       *  The data may hold an array of type T or a single value of type T. The single value must not be undefined as
       *  well as the array of type T must be a dense array. (Must not contain undefined values)
@@ -525,8 +543,6 @@ namespace TS
       *  yourself if the order of the data is important in any way. You may also use the synchronous 'write' function.
       *  This function may call the stream 'onError' callback for 'TS.InvalidOperationException' and
       *  'TS.TimeoutException' exceptions which may rise during the promise execution.
-      *
-      * @implements {TS.IO.IStream}
       *
       * @param {T | Array<T>} data, A single value of type T or an arbitrary array of type T which is the payload to write.
       * @param {number} timeout, Write operation timeout in seconds. Must be an unsigned integer > 0.
@@ -782,10 +798,10 @@ namespace TS
 
 
       /**
-      * @description Places a request to close the stream. After a call to this function further write operation are
-      *  allowed. A violation of that rule will leave the stream in an erroneous state.
-      *
       * @implements {TS.IO.IStream}
+      *
+      * @description Places a request to close the stream. After a call to this function no further write operation is
+      *  allowed. A violation of that rule will leave the stream in an erroneous state.
       */
       public close()
       {

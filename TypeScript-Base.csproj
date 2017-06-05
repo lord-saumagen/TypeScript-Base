@@ -10,7 +10,7 @@
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
-    <TypeScriptToolsVersion>2.0</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>2.2</TypeScriptToolsVersion>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
@@ -25,15 +25,21 @@
     <TypeScriptCompile Include="Encoding\Base64.ts" />
     <TypeScriptCompile Include="Encoding\UTF.ts" />
     <TypeScriptCompile Include="Exception\Exception.ts" />
+    <TypeScriptCompile Include="IO\BitStringStream.ts" />
+    <TypeScriptCompile Include="IO\ByteStream.ts" />
     <TypeScriptCompile Include="IO\IStream.ts" />
     <TypeScriptCompile Include="IO\Stream.ts" />
     <TypeScriptCompile Include="IO\StreamStateEnum.ts" />
+    <TypeScriptCompile Include="TypeCode\GUID.ts" />
     <TypeScriptCompile Include="TypeCode\UInt64.ts" />
     <TypeScriptCompile Include="Utils\Assert.ts" />
+    <TypeScriptCompile Include="Utils\HTTPStatusCodes.ts" />
+    <TypeScriptCompile Include="Utils\TypeGuards.ts" />
     <TypeScriptCompile Include="Utils\Utils.ts" />
     <TypeScriptCompile Include="_references.ts" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="PostBuild.txt" />
     <Content Include="README.md" />
   </ItemGroup>
   <PropertyGroup>
@@ -99,7 +105,7 @@
     type: boolean, 
     default: false, 
     description: Emit design-type metadata for decorated declarations in source. See issue #2577 for details. 
-	-->
+    -->
     <TypeScriptEmitDecoratorMetadata>False</TypeScriptEmitDecoratorMetadata>
     <!-- 
     type: boolean, 
@@ -124,7 +130,7 @@
     default: null, 
     description: Specifies the location where debugger should locate map files instead of generated locations. 
                  Use this flag if the .map files will be located at run-time in a different location than than the .js files. 
-    			 The location specified will be embedded in the sourceMap to direct the debugger where the map files where be loca
+                 The location specified will be embedded in the sourceMap to direct the debugger where the map files where be loca
     -->
     <TypeScriptMapRoot>
     </TypeScriptMapRoot>
@@ -166,13 +172,13 @@
     -->
     <TypeScriptNoResolve>
     </TypeScriptNoResolve>
-	<!--
+    <!--
     type: boolean,
-	default: alse,
-	description: In strict null checking mode, the null and undefined values are not in the domain of every type and are only assignable to themselves and any (the one exception
+    default: alse,
+    description: In strict null checking mode, the null and undefined values are not in the domain of every type and are only assignable to themselves and any (the one exception
                  being that undefined is also assignable to void).
-	-->
-	<TypeScriptStrictNullChecks>True</TypeScriptStrictNullChecks>
+    -->
+    <TypeScriptStrictNullChecks>False</TypeScriptStrictNullChecks>
     <!-- 
     type: string, 
     default: null, 
@@ -184,7 +190,7 @@
     default: null, 
     description: Concatenate and emit output to single file. The order of concatenation is determined by the 
                  list of files passed to the compiler on the command line along with triple-slash references 
-    			 and imports. See output file order documentation for more details. 
+                 and imports. See output file order documentation for more details. 
     -->
     <TypeScriptOutFile>./TS-Base.js</TypeScriptOutFile>
     <!-- 
@@ -218,9 +224,9 @@
     default: null, 
     description: Specifies the location where debugger should locate TypeScript files instead of source locations. 
                  Use this flag if the sources will be located at run-time in a different location than that at design-time. 
-    			 The location specified will be embedded in the sourceMap to direct the debugger where the source files where be located. 
+                 The location specified will be embedded in the sourceMap to direct the debugger where the source files where be located. 
     -->
-    <TypeScriptSourceMap>False</TypeScriptSourceMap>
+    <TypeScriptSourceMap>True</TypeScriptSourceMap>
     <!-- 
     type: boolean, 
     default: false, 
@@ -318,6 +324,9 @@
     -->
     <TypeScriptNoImplicitUseStrict>True</TypeScriptNoImplicitUseStrict>
     <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+    <NoWarn>
+    </NoWarn>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <!--
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
@@ -335,7 +344,31 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>cd $(ProjectDir)
+cd ..
+@echo ********************************************************************************
+@echo STARTING: CleanCopy-Base.cmd
+@echo ********************************************************************************
+call CleanCopy-Base.cmd
+@echo ********************************************************************************
+@echo FINISHED: CleanCopy-Base.cmd
+@echo ********************************************************************************
+@echo ********************************************************************************
+@echo STARTING: TypeScript-Base-Doc.cmd
+@echo ********************************************************************************
+call TypeScript-Base-Doc.cmd
+@echo ********************************************************************************
+@echo FINISHED: TypeScript-Base-Doc.cmd
+@echo ********************************************************************************
+@echo ********************************************************************************
+@echo STARTING: Copy main.css
+@echo ********************************************************************************
+cd $(ProjectDir)
+cd ..
+copy "./main.css" "./TypeScript-Base-Documentation/assets/css" /Y
+@echo ********************************************************************************
+@echo FINISHED: Copy main.css
+@echo ********************************************************************************
+cd $(ProjectDir)</PostBuildEvent>
   </PropertyGroup>
 </Project>

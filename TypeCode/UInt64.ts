@@ -1,7 +1,7 @@
 ﻿/// <reference path="../_references.ts" />
 namespace TS
 {
-  export module TypeCode
+  export namespace TypeCode
   {
 
     /**
@@ -53,7 +53,7 @@ namespace TS
         TS.Utils.checkUIntNumberParameter("value", value, "TS.TypeCode.UInt64.set mostSignificantInteger");
         if (value > 0xFFFFFFFF)
         {
-          throw new TS.ArgumentOutOfRangeException("mostSignificantInteger", value, "The argument exceeded the valid number range. Valid numbers must fall into the range of [0 ..." + 0xFFFFFFFF.toString() + "]");
+          throw new TS.ArgumentOutOfRangeException("mostSignificantInteger", value, "The argument exceeded the valid number range. Valid numbers must fall into the range of [0 ..." + (0xFFFFFFFF).toString() + "]");
         }//END if
 
         this.internalMostSignificantInteger = value;
@@ -85,7 +85,7 @@ namespace TS
         TS.Utils.checkUIntNumberParameter("value", value, "TS.TypeCode.UInt64.set leastSignificantInteger");
         if (value > 0xFFFFFFFF)
         {
-          throw new TS.ArgumentOutOfRangeException("leastSignificantInteger", value, "The argument exceeded the valid number range. Valid numbers must fall into the range of [0 ..." + 0xFFFFFFFF.toString() + "]");
+          throw new TS.ArgumentOutOfRangeException("leastSignificantInteger", value, "The argument exceeded the valid number range. Valid numbers must fall into the range of [0 ..." + (0xFFFFFFFF).toString() + "]");
         }//END if
 
         this.internalLeastSignificantInteger = value;
